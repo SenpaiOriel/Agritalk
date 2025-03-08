@@ -89,10 +89,11 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFF',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 20,
     width: '90%',
-    elevation: 1,
+    elevation: 2,
     alignItems: 'center',
+    marginTop:'90',
   },
   icon: {
     marginBottom: 10,
