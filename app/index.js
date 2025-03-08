@@ -1,58 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Animated, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const Login = () => {
+const LoadingScreen = () => {
   const router = useRouter();
-  const [form, setForm] = useState({
-    username: '',
-    password: ''
-  });
-  const [showPassword, setShowPassword] = useState(false);
+  
+  // Animated values for three dots
+  const dot1Anim = useRef(new Animated.Value(1)).current;
+  const dot2Anim = useRef(new Animated.Value(0.2)).current;
+  const dot3Anim = useRef(new Animated.Value(0.2)).current;
 
-  const handleChange = (key, value) => {
-    setForm({ ...form, [key]: value });
-  };
+  useEffect(() => {
+    const animateDots = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(dot1Anim, {
+            toValue: 0.2,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dot2Anim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dot3Anim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dot1Anim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dot2Anim, {
+            toValue: 0.2,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(dot3Anim, {
+            toValue: 0.2,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
 
-  const handleLogin = () => {
-    if (!form.username || !form.password) {
-      alert('Please fill in all fields');
-      return;
-    }
-    alert('Login Successful!');
-    router.push('/dashboard'); 
-  };
+    animateDots();
+
+    // Redirect after 3 seconds
+    setTimeout(() => {
+      router.replace('/login');
+    }, 5000);
+
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        placeholder="Username"
-        style={styles.input}
-        onChangeText={text => handleChange('username', text)}
-      />
+      {/* Round Logo */}
+      <Image source={require('../assets/logo.webp')} style={styles.logo} />
       
-    
-      <View style={styles.passwordContainer}>
-        <TextInput
-          placeholder="Password"
-          style={styles.passwordInput}
-          secureTextEntry={!showPassword}
-          onChangeText={text => handleChange('password', text)}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-          <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
-        </TouchableOpacity>
+      {/* Loading Dots */}
+      <View style={styles.loader}>
+        <Animated.View style={[styles.dot, { opacity: dot1Anim }]} />
+        <Animated.View style={[styles.dot, { opacity: dot2Anim }]} />
+        <Animated.View style={[styles.dot, { opacity: dot3Anim }]} />
       </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={styles.link}>Don't have an account? Register</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -62,58 +77,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#84AA80'
+    backgroundColor: '#84AA80',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20
+  logo: {
+    width: 100, 
+    height: 100,
+    borderRadius: 60, 
+    resizeMode: 'cover', 
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: 'white', 
   },
-  input: {
-    width: '100%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    backgroundColor: '#fff'
-  },
-  passwordContainer: {
+  loader: {
     flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    backgroundColor: '#fff'
+    justifyContent: 'space-between',
+    width: 60, 
   },
-  passwordInput: {
-    flex: 1,
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 20,
+    backgroundColor: '#000',
   },
-  eyeIcon: {
-    paddingHorizontal: 10
-  },
-  button: {
-    backgroundColor: '#809a03',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 10
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: 'bold'
-  },
-  link: {
-    marginTop: 10,
-    color: '#000'
-  }
 });
 
-export default Login;
+export default LoadingScreen;
