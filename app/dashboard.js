@@ -141,6 +141,16 @@ const HomeScreen = () => {
           >
             <Text style={styles.largeCardText}>About App</Text>
           </TouchableOpacity>
+         </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.largeCard}
+            onPress={() => {
+              toggleMenu();
+              router.push('/');
+            }}
+          >
+            <Text style={styles.largeCardText}>Logout</Text>
+          </TouchableOpacity>  
         </View>
       </Animated.View>
     </View>
