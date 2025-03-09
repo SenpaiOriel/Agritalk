@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 10,
     color: '#000',
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
+    textAlign:'right'
   },
   logo: {
     width: 100, 
