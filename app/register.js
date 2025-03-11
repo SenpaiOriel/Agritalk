@@ -53,7 +53,7 @@ const Register = () => {
       return;
     }
     Alert.alert('Success', 'Registration Successful');
-    router.replace('/dashboard'); 
+    router.replace('/login'); 
   };
 
   return (
