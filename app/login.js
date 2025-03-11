@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -10,9 +10,11 @@ const Login = () => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
+    setErrorMessage(''); // Clear error when user starts typing
   };
 
   const validateEmail = (email) => {
@@ -27,30 +29,33 @@ const Login = () => {
 
   const handleLogin = () => {
     if (!form.email || !form.password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      setErrorMessage('Please fill in all fields');
       return;
     }
 
     if (!validateEmail(form.email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      setErrorMessage('Please enter a valid email address');
       return;
     }
 
     if (!validatePassword(form.password)) {
-      Alert.alert(
-        'Error',
-        'Password must be at least 8 characters long, contain an uppercase letter and a number'
+      setErrorMessage(
+        'Password must be at least 8 characters, contain an uppercase letter and a number'
       );
       return;
     }
 
-    router.push('/dashboard'); 
+    // If login is successful (you can adjust this to check credentials)
+    setErrorMessage('');
+    router.push('/dashboard');
   };
 
   return (
     <View style={styles.container}>
       <Image source={require('../assets/logo.webp')} style={styles.logo} />
-      
+
+      {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+
       <View style={styles.inputContainer}>
         <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
         <TextInput
@@ -158,17 +163,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#000',
     textDecorationLine: 'underline',
-    textAlign:'right'
+    textAlign: 'right'
   },
   logo: {
-    width: 100, 
+    width: 100,
     height: 100,
-    borderRadius: 50, 
+    borderRadius: 50,
     resizeMode: 'cover',
     marginBottom: 10,
-    borderWidth: 3, 
-    borderColor: 'white', 
+    borderWidth: 3,
+    borderColor: 'white',
   },
+  errorMessage: {
+    color: '#ff4d4d',
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
+  }
 });
 
 export default Login;
