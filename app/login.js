@@ -40,7 +40,7 @@ const Login = () => {
 
     if (!validatePassword(form.password)) {
       setErrorMessage(
-        'Password must be at least 8 characters, contain an uppercase letter and a number'
+        'Your password input is incorrect..'
       );
       return;
     }
