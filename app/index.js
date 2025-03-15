@@ -87,6 +87,15 @@ const styles = StyleSheet.create({
     marginBottom: 20, // Space between logo and dots
     borderWidth: 3, // Optional: Add a border
     borderColor: 'white', // Optional: Border color
+
+    width: 100, 
+    height: 100,
+    borderRadius: 60, 
+    resizeMode: 'cover', 
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: 'white', 
+
   },
   loader: {
     flexDirection: 'row',
