@@ -49,6 +49,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Guard Your Crops,</Text>
         <Text style={styles.headerTitle}>Grow with Confidence!</Text>
+         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
 
 
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   header: {
-    backgroundColor: '#84AA80',
+    backgroundColor: '#3b591e',
     paddingTop: 60,
     paddingBottom: 30,
     alignItems: 'center',
@@ -275,4 +276,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
+  logo: {
+  position: 'absolute',
+  top: 10, // Adjust as needed
+  right: 20, // Positioned on the right
+  width: 50,
+  height: 50,
+  borderRadius: 50,
+  resizeMode: 'cover',
+  borderWidth: 3,
+  borderColor: '#84AA80',
+},
 });

@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: 70,
-    backgroundColor: '#84AA80',
+    backgroundColor: '#3b591e',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,

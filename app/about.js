@@ -18,14 +18,14 @@ const AboutScreen = () => {
         <TouchableOpacity onPress={() => router.replace('/dashboard')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>About the App</Text>
+        <Text style={styles.headerTitle}>About</Text>
       </View>
 
       {/* Content */}
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>AgriTalk</Text>
+        <Text style={styles.title}>CropMD</Text>
         <Text style={styles.paragraph}>
-          Welcome to AgriTalk, the app designed to help you protect your crops and grow with confidence!
+          Welcome to CropMD, the app designed to help you protect your crops and grow with confidence!
         </Text>
         <Text style={styles.paragraph}>
           With our easy-to-use interface, you can capture images of your crops to learn about common diseases and receive guidance on proper crop care.
@@ -42,10 +42,10 @@ const AboutScreen = () => {
           <Text style={styles.contactTitle}>Contact Us</Text>
           <TouchableOpacity
             style={styles.contactItem}
-            onPress={() => handlePress('mailto:AgriTalk@gmail.com')}
+            onPress={() => handlePress('mailto:CropMD@gmail.com')}
           >
             <Ionicons name="mail" size={24} color="#84AA80" />
-            <Text style={styles.contactText}>AgriTalk@gmail.com</Text>
+            <Text style={styles.contactText}>CropMD@gmail.com</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.contactItem}
@@ -74,15 +74,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7F7F7',
   },
-  header: {
-    backgroundColor: '#84AA80',
-    paddingTop: 20,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+ header: {
+    backgroundColor: '#3b591e',
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   backButton: {
     padding: 5,

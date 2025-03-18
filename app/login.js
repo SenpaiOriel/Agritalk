@@ -52,7 +52,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo.webp')} style={styles.logo} />
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
 
       {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
 
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#84AA80'
+    backgroundColor: '#3b591e'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     marginBottom: 10,
     borderWidth: 3,
-    borderColor: 'white',
+    borderColor: '#84AA80',
   },
   errorMessage: {
     color: '#ff4d4d',

@@ -60,7 +60,7 @@ const LoadingScreen = () => {
   return (
     <View style={styles.container}>
       {/* Round Logo */}
-      <Image source={require('../assets/logo.webp')} style={styles.logo} />
+      <Image source={require('../assets/logo.png')} style={styles.logo} />
       
       {/* Loading Dots */}
       <View style={styles.loader}>
@@ -77,25 +77,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#84AA80',
+    backgroundColor: '#3b591e',
   },
   logo: {
-    width: 100, // Adjust the size as needed
+    width: 100,
     height: 100,
-    borderRadius: 60, // Makes it perfectly round (width/2)
-    resizeMode: 'cover', // Ensures the image fills the round shape
-    marginBottom: 20, // Space between logo and dots
-    borderWidth: 3, // Optional: Add a border
-    borderColor: 'white', // Optional: Border color
-
-    width: 100, 
-    height: 100,
-    borderRadius: 60, 
-    resizeMode: 'cover', 
-    marginBottom: 20,
+    borderRadius: 50,
+    resizeMode: 'cover',
+    marginBottom: 10,
     borderWidth: 3,
-    borderColor: 'white', 
-
+    borderColor: '#84AA80',
   },
   loader: {
     flexDirection: 'row',
