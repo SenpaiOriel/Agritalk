@@ -173,7 +173,7 @@ const FeedbackScreen = () => {
 
       {/* Feedback Card */}
       <View style={styles.card}>
-      <Ionicons name="leaf" size={40} color="#4CAF50" style={styles.icon} />
+        <Ionicons name="leaf" size={40} color="#4CAF50" style={styles.icon} />
         <Text style={styles.title}>How do you rate our Application?</Text>
         <View style={styles.starsContainer}>
           {[1, 2, 3, 4, 5].map((star) => (
@@ -240,13 +240,14 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    height: 60,
+    height: 70,
     backgroundColor: '#84AA80',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+    zIndex: 1, // Ensure header is above other elements
   },
   backButton: {
     padding: 10,
@@ -258,17 +259,18 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#FFF',
-    padding: 20,
+    padding: 15,
     borderRadius: 20,
     width: '90%',
     alignSelf: 'center',
-    marginBottom: 20,
-    marginTop: 20,
+    marginBottom: 10,
+    marginTop: 10,
     shadowColor: '#1B5E20',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    shadowOffset: { width: 5, height: 4 },
+    shadowOpacity: 3,
+    shadowRadius: 10,
     elevation: 10,
+    zIndex: 2, // Ensure card is above the header
   },
   title: {
     fontSize: 24,
@@ -359,7 +361,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  icon:{
-    alignSelf:'center'
-  }
+  icon: {
+    alignSelf: 'center',
+  },
 });

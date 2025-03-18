@@ -8,14 +8,14 @@ const AboutScreen = () => {
   const router = useRouter();
 
   const handlePress = (url) => {
-    Linking.openURL(url);
+    Linking.openURL(url).catch((err) => console.error('Failed to open URL:', err));
   };
 
   return (
     <View style={styles.container}>
       {/* Header with Back Button and Title */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => router.replace('/dashboard')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>About the App</Text>
@@ -42,14 +42,14 @@ const AboutScreen = () => {
           <Text style={styles.contactTitle}>Contact Us</Text>
           <TouchableOpacity
             style={styles.contactItem}
-            onPress={() => handlePress('mailto:example@gmail.com')}
+            onPress={() => handlePress('mailto:AgriTalk@gmail.com')}
           >
             <Ionicons name="mail" size={24} color="#84AA80" />
-            <Text style={styles.contactText}>example@gmail.com</Text>
+            <Text style={styles.contactText}>AgriTalk@gmail.com</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.contactItem}
-            onPress={() => handlePress('https://www.facebook.com/yourpage')}
+            onPress={() => handlePress('https://www.facebook.com/')}
           >
             <FontAwesome name="facebook" size={24} color="#84AA80" />
             <Text style={styles.contactText}>Facebook</Text>
@@ -59,7 +59,7 @@ const AboutScreen = () => {
             onPress={() => handlePress('tel:+1234567890')}
           >
             <Ionicons name="call" size={24} color="#84AA80" />
-            <Text style={styles.contactText}>+639</Text>
+            <Text style={styles.contactText}>+639123456789</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

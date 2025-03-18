@@ -41,7 +41,7 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
 
       <View style={styles.header}>
         <TouchableOpacity onPress={toggleMenu} style={styles.burgerButton}>
@@ -154,7 +154,7 @@ const HomeScreen = () => {
 
         </View>
       </Animated.View>
-    </View>
+    </ScrollView>
   );
 };
 
