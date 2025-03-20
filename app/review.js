@@ -220,7 +220,7 @@ const FeedbackScreen = () => {
       >
         {/* Feedback Card */}
         <View style={styles.card}>
-          <Image source={require('../assets/logo.png')} style={[styles.icon, { width: 50, height: 50, borderRadius: 25, alignSelf: 'center', marginBottom: 10 }]} />
+          <Image source={require('../assets/logo.png')} style={[styles.icon, { width: 70, height: 54,  alignSelf: 'center', marginBottom: 10 }]} />
           <Text style={styles.title}>How's your experience?</Text>
           <Text style={styles.subtitle}>Your feedback helps us improve our service</Text>
           <View style={styles.starsContainer}>
@@ -320,40 +320,46 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    height: 80,
-    backgroundColor: '#2E593F',
+    height: 65,
+    backgroundColor: '#3E6E53',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 20,
+    paddingTop: 15,
+    zIndex: 0,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-    elevation: 5,
   },
   backButton: {
-    padding: 10,
+    padding: 8,
+    marginTop: -10,  
   },
   headerTitle: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#FFF',
     fontFamily: 'OpenSans',
-    marginLeft: 15,
+    marginLeft: 10,
+    marginTop: 0,
   },
   card: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#F4F4F4',
     padding: 25,
-    paddingTop: 20,
     paddingBottom: 30,
     borderRadius: 20,
     width: '92%',
     alignSelf: 'center',
-    marginTop: 15,
-    marginBottom: 15,
-    shadowColor: '#1B5E20',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 8,
+    marginTop: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    zIndex: 2,
+    position: 'relative',
+    bottom: 15
   },
   title: {
     fontSize: 26,
@@ -407,7 +413,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
-    backgroundColor: '#1B5E20',
+    backgroundColor: '#9CC0A0',
     paddingVertical: 14,
     borderRadius: 12,
     elevation: 3,
@@ -536,5 +542,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 30,
+    marginTop: 0,
+    zIndex: 2,
   },
 });

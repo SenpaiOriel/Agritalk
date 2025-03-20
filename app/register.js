@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Register = () => {
   const router = useRouter();
@@ -58,9 +59,12 @@ const Register = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+     colors={['#94C999', '#7FB084', '#629467', '#437347']}
+      style={styles.container}
+    >
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={30} color="black" />
+        <Ionicons name="arrow-back" size={30} color="white" />
       </TouchableOpacity>
 
       <Text style={styles.title}>Register</Text>
@@ -146,7 +150,7 @@ const Register = () => {
       <TouchableOpacity onPress={() => router.push('/login')}>
         <Text style={styles.link}>Already have an account? Login</Text>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 };
 
@@ -158,7 +162,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#2E593F'
   },
   backButton: {
     position: 'absolute',
@@ -170,7 +173,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    fontFamily: 'OpenSans'
+    fontFamily: 'OpenSans',
+    color: 'white'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -204,7 +208,8 @@ const styles = StyleSheet.create({
   },
   link: {
     marginTop: 10,
-    color: '#000',
+    color: 'black',
+    textDecorationLine: 'underline',
     fontFamily: 'OpenSans'
   },
   passwordContainer: {

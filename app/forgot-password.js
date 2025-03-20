@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -32,7 +33,9 @@ const ForgotPassword = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient 
+    colors={['#94C999', '#7FB084', '#629467', '#437347']}
+    style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={30} color="black" />
       </TouchableOpacity>
@@ -53,7 +56,7 @@ const ForgotPassword = () => {
       <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
         <Text style={styles.buttonText}>Send Reset Link</Text>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 };
 

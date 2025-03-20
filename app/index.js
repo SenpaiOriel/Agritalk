@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const LoadingScreen = () => {
   const router = useRouter();
@@ -58,17 +59,11 @@ const LoadingScreen = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {/* Round Logo */}
-      <Image source={require('../assets/logo.png')} style={styles.logo} />
-      
-      {/* Loading Dots */}
-      <View style={styles.loader}>
-        <Animated.View style={[styles.dot, { opacity: dot1Anim }]} />
-        <Animated.View style={[styles.dot, { opacity: dot2Anim }]} />
-        <Animated.View style={[styles.dot, { opacity: dot3Anim }]} />
-      </View>
-    </View>
+    <LinearGradient
+      colors={['#94C999', '#7FB084', '#629467', '#437347']}
+      style={styles.container}>
+            <Image source={require('../assets/logo.png')} style={styles.logo} />
+    </LinearGradient>
   );
 };
 
@@ -77,27 +72,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#2E593F',
   },
   logo: {
-    width: 100,
+    width: 115,
     height: 100,
-    borderRadius: 50,
-    resizeMode: 'cover',
-    marginBottom: 10,
-    borderWidth: 3,
-    borderColor: '#84AA80',
-  },
-  loader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 60, 
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 20,
-    backgroundColor: '#000',
+    marginBottom: 30
   },
 });
 

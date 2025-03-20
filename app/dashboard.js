@@ -127,7 +127,7 @@ const HomeScreen = () => {
       <Animated.View style={[styles.drawer, { transform: [{ translateX: drawerAnim }] }]}>
         <View style={styles.drawerHeader}>
           <TouchableOpacity onPress={toggleMenu} style={styles.iconWrapper}>
-            <Ionicons name="arrow-back" size={32} color="#fff" />
+            <Ionicons name="arrow-back" size={32} color="#000" />
           </TouchableOpacity>
         </View>
         <View style={styles.drawerContent}>
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   header: {
-    backgroundColor: '#2E593F',
+    backgroundColor: '#3E6E53F7',
     paddingTop: 60,
     paddingBottom: 75,
     alignItems: 'flex-start',
@@ -196,7 +196,6 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'left',
     marginBottom: 5,
@@ -227,7 +226,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   card: {
-    backgroundColor: '#d5e8c0',
+    backgroundColor: '#D5EBDF',
     width: '90%',
     borderRadius: 20,
     marginBottom: 15,
@@ -297,15 +296,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     marginBottom: 50,
-    borderBottomWidth: 1,
-    borderBottomColor: '#fff',
     paddingBottom: 10,
-    backgroundColor: '#2E593F',
     paddingTop: 15,
   },
   iconWrapper: {
-    marginLeft: 175,
+    marginRight: 175,
     padding: 3,
+    
   },
   drawerContent: {
     paddingHorizontal: 20,
@@ -334,11 +331,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 20,
-    width: 50,
+    width: 58,
     height: 50,
-    borderRadius: 50,
-    resizeMode: 'cover',
-    borderWidth: 3,
-    borderColor: '#84AA80',
   },
 });
