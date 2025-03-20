@@ -8,7 +8,9 @@ import {
   Modal,
   FlatList,
   Keyboard,
+  ScrollView,
   Alert,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -79,20 +81,38 @@ const FeedbackScreen = () => {
 
   const handleDeleteReview = (id) => {
     Alert.alert(
-      'Delete Review',
-      'Are you sure you want to delete this review?',
+      '🗑️ Delete Review',
+      'This action cannot be undone.',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: '↩️ Keep',
+          style: 'cancel',
+        },
         {
-          text: 'Delete',
+          text: '🗑️ Delete',
           onPress: () => {
             const updatedReviews = reviews.filter((review) => review.id !== id);
             setReviews(updatedReviews);
             saveReviews(updatedReviews);
+            Alert.alert(
+              '✅ Success',
+              'Review deleted',
+              [{ text: 'OK' }],
+              { 
+                cancelable: true,
+                titleStyle: { fontFamily: 'OpenSans-Bold' },
+                messageStyle: { fontFamily: 'OpenSans' }
+              }
+            );
           },
           style: 'destructive',
         },
-      ]
+      ],
+      { 
+        cancelable: true,
+        titleStyle: { fontFamily: 'OpenSans-Bold' },
+        messageStyle: { fontFamily: 'OpenSans' }
+      }
     );
   };
 
@@ -115,6 +135,16 @@ const FeedbackScreen = () => {
       setRating(0);
       setFeedback('');
       Keyboard.dismiss();
+      Alert.alert(
+        '✅ Success',
+        'Review updated',
+        [{ text: 'OK' }],
+        { 
+          cancelable: true,
+          titleStyle: { fontFamily: 'OpenSans-Bold' },
+          messageStyle: { fontFamily: 'OpenSans' }
+        }
+      );
     }
   };
 
@@ -136,18 +166,31 @@ const FeedbackScreen = () => {
         {/* Three Dots Menu */}
         <TouchableOpacity
           onPress={() =>
-            Alert.alert('Options', 'Do you want to Edit or delete this review?', [
-              {
-                text: 'Edit',
-                onPress: () => handleEditReview(item),
-              },
-              {
-                text: 'Delete',
-                onPress: () => handleDeleteReview(item.id),
-                style: 'destructive',
-              },
-              { text: 'Cancel', style: 'cancel' },
-            ])
+            Alert.alert(
+              '✏️ Review Actions',
+              'Choose an action:',
+              [
+                {
+                  text: '📝 Edit',
+                  onPress: () => handleEditReview(item),
+                  style: 'default',
+                },
+                {
+                  text: '🗑️ Delete',
+                  onPress: () => handleDeleteReview(item.id),
+                  style: 'destructive',
+                },
+                {
+                  text: '❌ Cancel',
+                  style: 'cancel',
+                },
+              ],
+              { 
+                cancelable: true,
+                titleStyle: { fontFamily: 'OpenSans-Bold' },
+                messageStyle: { fontFamily: 'OpenSans' }
+              }
+            )
           }
         >
           <Ionicons name="ellipsis-vertical" size={20} color="#888" />
@@ -171,57 +214,94 @@ const FeedbackScreen = () => {
         <Text style={styles.headerTitle}>Feedback</Text>
       </View>
 
-      {/* Feedback Card */}
-      <View style={styles.card}>
-        <Ionicons name="leaf" size={40} color="#4CAF50" style={styles.icon} />
-        <Text style={styles.title}>How do you rate our Application?</Text>
-        <View style={styles.starsContainer}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <TouchableOpacity key={star} onPress={() => handleStarPress(star)}>
-              <Ionicons
-                name={star <= rating ? 'star' : 'star-outline'}
-                size={40}
-                color={star <= rating ? '#FFD700' : '#CCC'}
-              />
-            </TouchableOpacity>
-          ))}
-        </View>
-        <TextInput
-          ref={inputRef}
-          style={styles.input}
-          placeholder="Why this rating?"
-          value={feedback}
-          onChangeText={setFeedback}
-          multiline
-        />
-        <TouchableOpacity
-          style={styles.submitButton}
-          onPress={selectedReview ? handleUpdateReview : handleSubmit}
-        >
-          <Text style={styles.submitText}>
-            {selectedReview ? 'Update' : 'Submit'}
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Feedback Card */}
+        <View style={styles.card}>
+          <Image source={require('../assets/logo.png')} style={[styles.icon, { width: 50, height: 50, borderRadius: 25, alignSelf: 'center', marginBottom: 10 }]} />
+          <Text style={styles.title}>How's your experience?</Text>
+          <Text style={styles.subtitle}>Your feedback helps us improve our service</Text>
+          <View style={styles.starsContainer}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <TouchableOpacity 
+                key={star} 
+                onPress={() => handleStarPress(star)}
+                style={styles.starButton}
+              >
+                <Ionicons
+                  name={star <= rating ? 'star' : 'star-outline'}
+                  size={45}
+                  color={star <= rating ? '#FFD700' : '#CCC'}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+          <Text style={styles.ratingText}>
+            {rating === 0 ? 'Tap a star to rate' :
+             rating === 1 ? 'Poor' :
+             rating === 2 ? 'Fair' :
+             rating === 3 ? 'Good' :
+             rating === 4 ? 'Very Good' : 'Excellent'}
           </Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.feedbackLabel}>Share your thoughts (optional):</Text>
+          <TextInput
+            ref={inputRef}
+            style={styles.input}
+            placeholder="Tell us what you think..."
+            value={feedback}
+            onChangeText={setFeedback}
+            multiline
+            placeholderTextColor="#999"
+          />
+          <TouchableOpacity
+            style={[styles.submitButton, rating === 0 && styles.submitButtonDisabled]}
+            onPress={selectedReview ? handleUpdateReview : handleSubmit}
+            disabled={rating === 0}
+          >
+            <Text style={styles.submitText}>
+              {selectedReview ? 'Update Review' : 'Submit Review'}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* List of Reviews */}
-      <View style={styles.reviewsContainer}>
-        <FlatList
-          data={reviews}
-          keyExtractor={(item) => item.id}
-          renderItem={renderReview}
-          contentContainerStyle={styles.reviewList}
-        />
-      </View>
+        {/* Reviews Header */}
+        <View style={styles.reviewsHeader}>
+          <Text style={styles.reviewsTitle}>Community Reviews</Text>
+          <Text style={styles.reviewsSubtitle}>See what others are saying</Text>
+        </View>
+
+        {/* List of Reviews */}
+        <View style={styles.reviewsContainer}>
+          <FlatList
+            data={reviews}
+            keyExtractor={(item) => item.id}
+            renderItem={renderReview}
+            contentContainerStyle={styles.reviewList}
+            scrollEnabled={false}
+            ListEmptyComponent={
+              <View style={styles.emptyReviews}>
+                <Ionicons name="chatbubble-outline" size={50} color="#CCC" />
+                <Text style={styles.emptyReviewsText}>No reviews yet</Text>
+                <Text style={styles.emptyReviewsSubtext}>Be the first to share your thoughts!</Text>
+              </View>
+            }
+          />
+        </View>
+      </ScrollView>
 
       {/* Success Modal */}
       <Modal visible={modalVisible} transparent animationType="fade">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Ionicons name="checkmark-circle" size={40} color="#4CAF50" />
-            <Text style={styles.modalText}>Thank you for your feedback!</Text>
+            <View style={styles.modalIconContainer}>
+              <Ionicons name="checkmark-circle" size={60} color="#4CAF50" />
+            </View>
+            <Text style={styles.modalTitle}>Thank You!</Text>
+            <Text style={styles.modalText}>Your feedback helps us serve you better.</Text>
             <TouchableOpacity style={styles.okButton} onPress={closeModal}>
-              <Text style={styles.okText}>OK</Text>
+              <Text style={styles.okText}>Continue</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -240,73 +320,110 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
-    height: 70,
-    backgroundColor: '#3b591e',
+    height: 80,
+    backgroundColor: '#2E593F',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    zIndex: 1, // Ensure header is above other elements
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    elevation: 5,
   },
   backButton: {
     padding: 10,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FFF',
+    fontFamily: 'OpenSans',
+    marginLeft: 15,
   },
   card: {
     backgroundColor: '#FFF',
-    padding: 15,
+    padding: 25,
+    paddingTop: 20,
+    paddingBottom: 30,
     borderRadius: 20,
-    width: '90%',
+    width: '92%',
     alignSelf: 'center',
-    marginBottom: 10,
-    marginTop: 10,
+    marginTop: 15,
+    marginBottom: 15,
     shadowColor: '#1B5E20',
-    shadowOffset: { width: 5, height: 4 },
-    shadowOpacity: 3,
-    shadowRadius: 10,
-    elevation: 10,
-    zIndex: 2, // Ensure card is above the header
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 8,
     textAlign: 'center',
+    color: '#2E593F',
+    fontFamily: 'OpenSans',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'OpenSans',
   },
   starsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 20,
   },
+  starButton: {
+    padding: 5,
+  },
+  ratingText: {
+    fontSize: 18,
+    color: '#2E593F',
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans',
+  },
+  feedbackLabel: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 8,
+    fontFamily: 'OpenSans',
+  },
   input: {
     width: '100%',
-    height: 80,
-    borderColor: '#CCC',
+    height: 100,
+    borderColor: '#DDD',
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
+    borderRadius: 12,
+    padding: 12,
     backgroundColor: '#FFF',
     textAlignVertical: 'top',
+    fontSize: 16,
+    fontFamily: 'OpenSans',
   },
   submitButton: {
     marginTop: 20,
     backgroundColor: '#1B5E20',
-    paddingVertical: 12,
-    borderRadius: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
+    elevation: 3,
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#CCC',
+    elevation: 0,
   },
   submitText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'OpenSans',
   },
   reviewsContainer: {
-    flex: 1,
     width: '90%',
     alignSelf: 'center',
     marginTop: 10,
@@ -316,10 +433,12 @@ const styles = StyleSheet.create({
   },
   reviewItem: {
     backgroundColor: '#FFF',
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 10,
-    elevation: 3,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    marginBottom: 12,
+    borderRadius: 15,
+    elevation: 2,
+    marginHorizontal: 2,
   },
   reviewHeader: {
     flexDirection: 'row',
@@ -333,35 +452,89 @@ const styles = StyleSheet.create({
   reviewText: {
     fontSize: 14,
     color: '#333',
+    fontFamily: 'OpenSans',
+  },
+  reviewsHeader: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  reviewsTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2E593F',
+    fontFamily: 'OpenSans',
+  },
+  reviewsSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    fontFamily: 'OpenSans',
+  },
+  emptyReviews: {
+    alignItems: 'center',
+    padding: 30,
+  },
+  emptyReviewsText: {
+    fontSize: 18,
+    color: '#666',
+    marginTop: 15,
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans',
+  },
+  emptyReviewsSubtext: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 5,
+    fontFamily: 'OpenSans',
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   modalContent: {
     backgroundColor: '#FFF',
     padding: 30,
-    borderRadius: 10,
+    borderRadius: 20,
     alignItems: 'center',
+    width: '85%',
+    elevation: 5,
+  },
+  modalIconContainer: {
+    backgroundColor: '#E8F5E9',
+    padding: 20,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2E593F',
+    marginBottom: 10,
+    fontFamily: 'OpenSans',
   },
   modalText: {
     fontSize: 16,
-    marginBottom: 20,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 25,
+    fontFamily: 'OpenSans',
   },
   okButton: {
     backgroundColor: '#1B5E20',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+    elevation: 3,
   },
   okText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    fontFamily: 'OpenSans',
   },
-  icon: {
-    alignSelf: 'center',
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 30,
   },
 });

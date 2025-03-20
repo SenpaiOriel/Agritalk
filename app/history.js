@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   header: {
-    backgroundColor: '#3b591e',
+    backgroundColor: '#2E593F',
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     marginLeft: 15,
+    fontFamily: 'OpenSans'
   },
   content: {
     flex: 1,
@@ -76,5 +77,6 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 18,
     color: 'black',
+    fontFamily: 'OpenSans'
   },
 });

@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#84AA80'
+    backgroundColor: '#2E593F'
   },
   backButton: {
     position: 'absolute',
@@ -74,12 +74,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: 10,
+    fontFamily: 'OpenSans'
   },
   subtitle: {
     fontSize: 16,
     color: '#555',
-    marginBottom: 20
+    marginBottom: 20,
+    fontFamily: 'OpenSans'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -95,7 +97,8 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 10,
+    fontFamily: 'OpenSans'
   },
   button: {
     backgroundColor: '#809a03',
@@ -106,7 +109,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFF',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans'
   }
 });
 

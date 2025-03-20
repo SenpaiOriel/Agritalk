@@ -15,6 +15,7 @@ const Register = () => {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
+    username: '',
     email: '',
     phone: '',
     password: '',
@@ -32,7 +33,7 @@ const Register = () => {
   const isValidPassword = (password) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
 
   const handleRegister = () => {
-    if (!form.firstName || !form.lastName || !form.email || !form.phone || !form.password || !form.confirmPassword) {
+    if (!form.firstName || !form.lastName || !form.username || !form.email || !form.phone || !form.password || !form.confirmPassword) {
       Alert.alert('Error', 'All fields are required');
       return;
     }
@@ -79,6 +80,15 @@ const Register = () => {
           placeholder="Last Name" 
           style={styles.input} 
           onChangeText={text => handleChange('lastName', text)} 
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Ionicons name="person-circle-outline" size={24} color="gray" style={styles.icon} />
+        <TextInput 
+          placeholder="Username" 
+          style={styles.input} 
+          onChangeText={text => handleChange('username', text)} 
         />
       </View>
 
@@ -148,7 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#3b591e'
+    backgroundColor: '#2E593F'
   },
   backButton: {
     position: 'absolute',
@@ -159,7 +169,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20
+    marginBottom: 20,
+    fontFamily: 'OpenSans'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -175,7 +186,8 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 10,
+    fontFamily: 'OpenSans'
   },
   button: {
     backgroundColor: '#809a03',
@@ -187,11 +199,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFF',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: 'OpenSans'
   },
   link: {
     marginTop: 10,
-    color: '#000'
+    color: '#000',
+    fontFamily: 'OpenSans'
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -207,7 +221,8 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1, 
-    marginLeft: 10
+    marginLeft: 10,
+    fontFamily: 'OpenSans'
   },
   icon: {
     marginRight: 10

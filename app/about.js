@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
  header: {
-    backgroundColor: '#3b591e',
+    backgroundColor: '#2E593F',
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
     marginRight: 30, // Ensures the title stays centered
+    fontFamily: 'OpenSans'
   },
   content: {
     padding: 20,
@@ -103,12 +104,14 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 15,
     textAlign: 'center',
+    fontFamily: 'OpenSans'
   },
   paragraph: {
     fontSize: 16,
     color: '#555',
     marginBottom: 15,
     lineHeight: 24,
+    fontFamily: 'OpenSans'
   },
   contactSection: {
     marginTop: 30,
@@ -122,16 +125,19 @@ const styles = StyleSheet.create({
     color: '#84AA80',
     marginBottom: 15,
     textAlign: 'center',
+    fontFamily: 'OpenSans'
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
     justifyContent: 'center',
+    fontFamily: 'OpenSans'
   },
   contactText: {
     fontSize: 16,
     color: '#555',
     marginLeft: 10,
+    fontFamily: 'OpenSans'
   },
 });

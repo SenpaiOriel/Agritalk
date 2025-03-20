@@ -45,7 +45,11 @@ const HomeScreen = () => {
 
       <View style={styles.header}>
         <TouchableOpacity onPress={toggleMenu} style={styles.burgerButton}>
-          <Ionicons name="menu" size={32} color="#fff" />
+          <View style={styles.burgerIcon}>
+            <View style={[styles.burgerLine, { width: 26 }]} />
+            <View style={[styles.burgerLine, { width: 32 }]} />
+            <View style={[styles.burgerLine, { width: 20 }]} />
+          </View>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Guard Your Crops,</Text>
         <Text style={styles.headerTitle}>Grow with Confidence!</Text>
@@ -60,13 +64,17 @@ const HomeScreen = () => {
             style={styles.card}
             onPress={() => router.push({ pathname: '/camera', params: { crop: 'Corn' } })}
           >
-            <Image source={require('../assets/mais.webp')} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>
-              Corn <Text style={styles.italic}>(Mais)</Text>
-            </Text>
-            <Text style={styles.cardSubtitle}>
-              Capture image of a leaf to know more about
-            </Text>
+            <View style={styles.cardContent}>
+              <Image source={require('../assets/mais.webp')} style={styles.cardLogo} />
+              <View style={styles.cardRight}>
+                <Text style={styles.cardTitle}>
+                  Corn <Text style={styles.italic}>(Mais)</Text>
+                </Text>
+                <Text style={styles.cardSubtitle}>
+                  Capture image of a leaf to know more about
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
 
           {/* Rice Card */}
@@ -74,13 +82,17 @@ const HomeScreen = () => {
             style={styles.card}
             onPress={() => router.push({ pathname: '/camera', params: { crop: 'Rice' } })}
           >
-            <Image source={require('../assets/palay.jpg')} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>
-              Rice <Text style={styles.italic}>(Palay)</Text>
-            </Text>
-            <Text style={styles.cardSubtitle}>
-              Capture image of a leaf to know more about
-            </Text>
+            <View style={styles.cardContent}>
+              <Image source={require('../assets/palay.jpg')} style={styles.cardLogo} />
+              <View style={styles.cardRight}>
+                <Text style={styles.cardTitle}>
+                  Rice <Text style={styles.italic}>(Palay)</Text>
+                </Text>
+                <Text style={styles.cardSubtitle}>
+                  Capture image of a leaf to know more about
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
 
           {/* Tomato Card */}
@@ -88,13 +100,17 @@ const HomeScreen = () => {
             style={styles.card}
             onPress={() => router.push({ pathname: '/camera', params: { crop: 'Tomato' } })}
           >
-            <Image source={require('../assets/kamatis.webp')} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>
-              Tomato <Text style={styles.italic}>(Kamatis)</Text>
-            </Text>
-            <Text style={styles.cardSubtitle}>
-              Capture image of a leaf to know more about
-            </Text>
+            <View style={styles.cardContent}>
+              <Image source={require('../assets/kamatis.webp')} style={styles.cardLogo} />
+              <View style={styles.cardRight}>
+                <Text style={styles.cardTitle}>
+                  Tomato <Text style={styles.italic}>(Kamatis)</Text>
+                </Text>
+                <Text style={styles.cardSubtitle}>
+                  Capture image of a leaf to know more about
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
         </View>
      
@@ -111,7 +127,7 @@ const HomeScreen = () => {
       <Animated.View style={[styles.drawer, { transform: [{ translateX: drawerAnim }] }]}>
         <View style={styles.drawerHeader}>
           <TouchableOpacity onPress={toggleMenu} style={styles.iconWrapper}>
-            <Ionicons name="arrow-back" size={28} color="#000" />
+            <Ionicons name="arrow-back" size={32} color="#fff" />
           </TouchableOpacity>
         </View>
         <View style={styles.drawerContent}>
@@ -167,19 +183,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   header: {
-    backgroundColor: '#3b591e',
+    backgroundColor: '#2E593F',
     paddingTop: 60,
-    paddingBottom: 30,
-    alignItems: 'center',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
+    paddingBottom: 75,
+    alignItems: 'flex-start',
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     position: 'relative',
+    paddingLeft: 20,
+    marginBottom: 20,
+    zIndex: 1,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFF',
-    textAlign: 'center',
+    textAlign: 'left',
+    marginBottom: 5,
+    fontFamily: 'OpenSans',
   },
   burgerButton: {
     position: 'absolute',
@@ -187,36 +208,62 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 10,
   },
+  burgerIcon: {
+    width: 32,
+    height: 24,
+    justifyContent: 'space-between',
+  },
+  burgerLine: {
+    height: 3,
+    backgroundColor: '#fff',
+    borderRadius: 1,
+  },
   scrollContent: {
     paddingBottom: 20,
   },
   content: {
-    marginTop: 10,
+    marginTop: -60,
     alignItems: 'center',
+    zIndex: 2,
   },
   card: {
     backgroundColor: '#d5e8c0',
     width: '90%',
     borderRadius: 20,
     marginBottom: 15,
-    alignItems: 'center',
     padding: 20,
     elevation: 5,
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    borderWidth: 2,
+    borderColor: '#d5e8c0',
   },
-  cardImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginBottom: 10,
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  cardRight: {
+    flex: 1,
+    marginLeft: 15,
+    alignItems: 'center',
+  },
+  cardLogo: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: '#84AA80',
+    backgroundColor: '#fff',
   },
   cardTitle: {
     fontSize: 18,
     color: '#000',
     fontWeight: '600',
+    marginBottom: 5,
+    textAlign: 'center',
+    fontFamily: 'OpenSans',
   },
   italic: {
     fontStyle: 'italic',
@@ -226,6 +273,7 @@ const styles = StyleSheet.create({
     color: '#555',
     marginTop: 5,
     textAlign: 'center',
+    fontFamily: 'OpenSans',
   },
   overlay: {
     position: 'absolute',
@@ -243,16 +291,21 @@ const styles = StyleSheet.create({
     width: DRAWER_WIDTH,
     backgroundColor: '#fffe',
     zIndex: 101,
-    paddingTop: 20,
   },
   drawerHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
     marginBottom: 50,
+    borderBottomWidth: 1,
+    borderBottomColor: '#fff',
+    paddingBottom: 10,
+    backgroundColor: '#2E593F',
+    paddingTop: 15,
   },
   iconWrapper: {
-    marginRight: 15,
+    marginLeft: 175,
+    padding: 3,
   },
   drawerContent: {
     paddingHorizontal: 20,
@@ -275,16 +328,17 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '600',
     textAlign: 'center',
+    fontFamily: 'OpenSans',
   },
   logo: {
-  position: 'absolute',
-  top: 10, // Adjust as needed
-  right: 20, // Positioned on the right
-  width: 50,
-  height: 50,
-  borderRadius: 50,
-  resizeMode: 'cover',
-  borderWidth: 3,
-  borderColor: '#84AA80',
-},
+    position: 'absolute',
+    top: 10,
+    right: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    resizeMode: 'cover',
+    borderWidth: 3,
+    borderColor: '#84AA80',
+  },
 });

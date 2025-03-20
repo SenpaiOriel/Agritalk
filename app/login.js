@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const Login = () => {
   const router = useRouter();
   const [form, setForm] = useState({
-    email: '',
+    identifier: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -17,9 +17,11 @@ const Login = () => {
     setErrorMessage(''); // Clear error when user starts typing
   };
 
-  const validateEmail = (email) => {
+  const validateIdentifier = (identifier) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const usernameRegex = /^[a-zA-Z0-9]{3,20}$/;
+    
+    return emailRegex.test(identifier) || usernameRegex.test(identifier);
   };
 
   const validatePassword = (password) => {
@@ -28,13 +30,13 @@ const Login = () => {
   };
 
   const handleLogin = () => {
-    if (!form.email || !form.password) {
+    if (!form.identifier || !form.password) {
       setErrorMessage('Please fill in all fields');
       return;
     }
 
-    if (!validateEmail(form.email)) {
-      setErrorMessage('Please enter a valid email address');
+    if (!validateIdentifier(form.identifier)) {
+      setErrorMessage('Please enter a valid email address or username');
       return;
     }
 
@@ -52,18 +54,22 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/logo.png')} style={styles.logo} />
+      <View style={styles.logo}>
+        <Image 
+          source={require('../assets/logo.png')} 
+          style={styles.logoImage} 
+        />
+      </View>
 
       {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
 
       <View style={styles.inputContainer}>
-        <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
+        <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
         <TextInput
-          placeholder="Email"
+          placeholder="Email or Username"
           style={styles.input}
-          keyboardType="email-address"
           autoCapitalize="none"
-          onChangeText={text => handleChange('email', text)}
+          onChangeText={text => handleChange('identifier', text)}
         />
       </View>
       
@@ -102,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#3b591e'
+    backgroundColor: '#2E593F'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -118,7 +124,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 10,
+    fontFamily: 'OpenSans',
+    fontSize: 16
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -134,7 +142,9 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 10,
+    fontFamily: 'OpenSans',
+    fontSize: 16
   },
   eyeIcon: {
     paddingHorizontal: 10
@@ -152,33 +162,44 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFF',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontFamily: 'OpenSans-Bold'
   },
   link: {
     marginTop: 10,
-    color: '#000'
+    color: '#000',
+    fontFamily: 'OpenSans',
+    fontSize: 16
   },
   forgotPassword: {
     marginTop: 5,
     marginBottom: 10,
     color: '#000',
     textDecorationLine: 'underline',
-    textAlign: 'right'
+    textAlign: 'right',
+    fontFamily: 'OpenSans',
+    fontSize: 14
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 85,
+    height: 85,
     borderRadius: 50,
     resizeMode: 'cover',
-    marginBottom: 10,
+    marginBottom: 15,
     borderWidth: 3,
     borderColor: '#84AA80',
+  },
+  logoImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 50,
+    resizeMode: 'cover',
   },
   errorMessage: {
     color: '#ff4d4d',
     fontSize: 14,
     marginBottom: 10,
     textAlign: 'center',
+    fontFamily: 'OpenSans'
   }
 });
 
