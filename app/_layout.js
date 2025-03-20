@@ -10,7 +10,6 @@ export default function RootLayout() {
       <Stack.Screen name="camera" />
       <Stack.Screen name="review" />
       <Stack.Screen name="history" />
-      
     </Stack>
   );
 }
