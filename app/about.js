@@ -90,10 +90,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFF',
-    textAlign: 'center',
+    textAlign: 'left',
     flex: 1,
     marginRight: 30, // Ensures the title stays centered
-    fontFamily: 'OpenSans'
+    fontFamily: 'OpenSans',
+    marginLeft: 15
   },
   content: {
     padding: 20,
