@@ -20,9 +20,9 @@ const Login = () => {
 
   const validateIdentifier = (identifier) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const usernameRegex = /^[a-zA-Z0-9]{3,20}$/;
     
-    return emailRegex.test(identifier) || usernameRegex.test(identifier);
+    
+    return emailRegex.test(identifier)
   };
 
   const validatePassword = (password) => {
@@ -37,7 +37,7 @@ const Login = () => {
     }
 
     if (!validateIdentifier(form.identifier)) {
-      setErrorMessage('Please enter a valid email address or username');
+      setErrorMessage('Please Enter valid email address!! ');
       return;
     }
 
@@ -70,7 +70,7 @@ const Login = () => {
       <View style={styles.inputContainer}>
         <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
         <TextInput
-          placeholder="Email or Username"
+          placeholder="Email"
           style={styles.input}
           autoCapitalize="none"
           onChangeText={text => handleChange('identifier', text)}
