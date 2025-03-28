@@ -1,48 +1,47 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Animated, StyleSheet, Image } from 'react-native';
+import { View, Animated, StyleSheet, ImageBackground, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const LoadingScreen = () => {
   const router = useRouter();
-  
+
   // Animated values for three dots
-  const dot1Anim = useRef(new Animated.Value(1)).current;
-  const dot2Anim = useRef(new Animated.Value(0.2)).current;
-  const dot3Anim = useRef(new Animated.Value(0.2)).current;
+  const dot1Anim = useRef(new Animated.Value(0.3)).current;
+  const dot2Anim = useRef(new Animated.Value(0.3)).current;
+  const dot3Anim = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
     const animateDots = () => {
       Animated.loop(
         Animated.sequence([
           Animated.timing(dot1Anim, {
-            toValue: 0.2,
-            duration: 300,
+            toValue: 1,
+            duration: 400,
             useNativeDriver: true,
           }),
           Animated.timing(dot2Anim, {
             toValue: 1,
-            duration: 300,
+            duration: 400,
             useNativeDriver: true,
           }),
           Animated.timing(dot3Anim, {
             toValue: 1,
-            duration: 300,
+            duration: 400,
             useNativeDriver: true,
           }),
           Animated.timing(dot1Anim, {
-            toValue: 1,
-            duration: 300,
+            toValue: 0.3,
+            duration: 400,
             useNativeDriver: true,
           }),
           Animated.timing(dot2Anim, {
-            toValue: 0.2,
-            duration: 300,
+            toValue: 0.3,
+            duration: 400,
             useNativeDriver: true,
           }),
           Animated.timing(dot3Anim, {
-            toValue: 0.2,
-            duration: 300,
+            toValue: 0.3,
+            duration: 400,
             useNativeDriver: true,
           }),
         ])
@@ -51,19 +50,23 @@ const LoadingScreen = () => {
 
     animateDots();
 
-    // Redirect after 3 seconds
+    // Redirect to login after 5 seconds
     setTimeout(() => {
       router.replace('/login');
     }, 5000);
-
   }, []);
 
   return (
-    <LinearGradient
-      colors={['#94C999', '#7FB084', '#629467', '#437347']}
-      style={styles.container}>
-            <Image source={require('../assets/logo.png')} style={styles.logo} />
-    </LinearGradient>
+    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}>
+      <View style={styles.content}>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
+        <View style={styles.loadingContainer}>
+          <Animated.View style={[styles.dot, { opacity: dot1Anim }]} />
+          <Animated.View style={[styles.dot, { opacity: dot2Anim }]} />
+          <Animated.View style={[styles.dot, { opacity: dot3Anim }]} />
+        </View>
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -72,11 +75,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  content: {
+    alignItems: 'center',
   },
   logo: {
     width: 115,
     height: 100,
-    marginBottom: 30
+    marginBottom: 30,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    marginHorizontal: 5,
   },
 });
 

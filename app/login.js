@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image,ImageBackground} from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const Login = () => {
   const router = useRouter();
@@ -54,10 +53,7 @@ const Login = () => {
   };
 
   return (
-    <LinearGradient
-      colors={['#94C999', '#7FB084', '#629467', '#437347']}
-      style={styles.container}
-    >
+    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}> 
       <View style={styles.logo}>
         <Image 
           source={require('../assets/logo.png')} 
@@ -102,7 +98,7 @@ const Login = () => {
       <TouchableOpacity onPress={() => router.push('/register')}>
         <Text style={styles.link}>Don't have an account? Register</Text>
       </TouchableOpacity>
-    </LinearGradient>
+     </ImageBackground>
   );
 };
 
@@ -173,24 +169,26 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
     fontSize: 16,
     textDecorationLine: 'underline',
+    color:"blue"
   },
   forgotPassword: {
     marginTop: 5,
     marginBottom: 10,
     color: '#000',
     textDecorationLine: 'underline',
-    textAlign: 'right',
+    textAlign: 'center',
     fontFamily: 'OpenSans',
-    fontSize: 14
+    fontSize: 14,
+    color:"blue"
   },
   logo: {
     width: 115,
     height: 100,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   logoImage: {
-    width: '100%',
-    height: '100%',
+    width: '80%',
+    height: '80%',
   },
   errorMessage: {
     color: '#ff4d4d',

@@ -1,77 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { 
   View, 
   Text, 
   TouchableOpacity, 
   StyleSheet, 
   Image, 
-  ScrollView, 
-  Animated,
-  Easing,
-  Dimensions 
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-
-const { width } = Dimensions.get('window');
-const DRAWER_WIDTH = width * 0.7;
+  ScrollView 
+} from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   const router = useRouter();
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [drawerAnim] = useState(new Animated.Value(-DRAWER_WIDTH));
+  const [language, setLanguage] = useState("EN");
 
-  const toggleMenu = () => {
-    if (menuVisible) {
-      Animated.timing(drawerAnim, {
-        toValue: -DRAWER_WIDTH,
-        duration: 300,
-        easing: Easing.ease,
-        useNativeDriver: false,
-      }).start(() => setMenuVisible(false));
-    } else {
-      setMenuVisible(true);
-      Animated.timing(drawerAnim, {
-        toValue: 0,
-        duration: 300,
-        easing: Easing.ease,
-        useNativeDriver: false,
-      }).start();
-    }
+  // Toggle Language
+  const toggleLanguage = () => {
+    setLanguage((prevLang) => (prevLang === "EN" ? "TL" : "EN"));
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
+        <View style={styles.header}>
+          {/* Language Toggle (Top Right) */}
+          <TouchableOpacity style={styles.languageToggle} onPress={toggleLanguage}>
+            <MaterialIcons name="g-translate" size={24} color="#FFF" />
+          </TouchableOpacity>
 
-      <View style={styles.header}>
-        <TouchableOpacity onPress={toggleMenu} style={styles.burgerButton}>
-          <View style={styles.burgerIcon}>
-            <View style={[styles.burgerLine, { width: 26 }]} />
-            <View style={[styles.burgerLine, { width: 32 }]} />
-            <View style={[styles.burgerLine, { width: 20 }]} />
+          <View style={styles.headerContent}>
+            {/* Logo */}
+            <Image source={require("../assets/logo.png")} style={styles.logo} />
+
+            {/* Title (Below Logo) */}
+            <Text style={styles.headerTitle}>
+              {language === "EN"
+                ? "Guard Your Crops,"
+                : "Bantayan ang Iyong Pananim, "}
+            </Text>
+            <Text style={styles.headerTitle}>
+              {language === "EN"
+                ? "Grow with Confidence!"
+                : " Lumago nang May Kumpiyansa!"}
+            </Text>
           </View>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Guard Your Crops,</Text>
-        <Text style={styles.headerTitle}>Grow with Confidence!</Text>
-         <Image source={require('../assets/logo.png')} style={styles.logo} />
-      </View>
+        </View>
 
-
-      
+        {/* Content */}
         <View style={styles.content}>
-
+          {/* Corn Card */}
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push({ pathname: '/camera', params: { crop: 'Corn' } })}
+            onPress={() => router.push({ pathname: "/camera", params: { crop: "Corn" } })}
           >
             <View style={styles.cardContent}>
-              <Image source={require('../assets/mais.webp')} style={styles.cardLogo} />
+              <Image source={require("../assets/mais.webp")} style={styles.cardLogo} />
               <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>
-                  Corn <Text style={styles.italic}>(Mais)</Text>
-                </Text>
+                <Text style={styles.cardTitle}>{language === "EN" ? "Corn" : "Mais"}</Text>
                 <Text style={styles.cardSubtitle}>
-                  Capture image of a leaf to know more about
+                  {language === "EN"
+                    ? "Capture image of a leaf to know more about your crop's condition"
+                    : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
                 </Text>
               </View>
             </View>
@@ -80,16 +70,16 @@ const HomeScreen = () => {
           {/* Rice Card */}
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push({ pathname: '/camera', params: { crop: 'Rice' } })}
+            onPress={() => router.push({ pathname: "/camera", params: { crop: "Rice" } })}
           >
             <View style={styles.cardContent}>
-              <Image source={require('../assets/palay.jpg')} style={styles.cardLogo} />
+              <Image source={require("../assets/palay.jpg")} style={styles.cardLogo} />
               <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>
-                  Rice <Text style={styles.italic}>(Palay)</Text>
-                </Text>
+                <Text style={styles.cardTitle}>{language === "EN" ? "Rice" : "Palay"}</Text>
                 <Text style={styles.cardSubtitle}>
-                  Capture image of a leaf to know more about
+                  {language === "EN"
+                    ? "Capture image of a leaf to know more about your crop's condition"
+                    : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
                 </Text>
               </View>
             </View>
@@ -98,80 +88,46 @@ const HomeScreen = () => {
           {/* Tomato Card */}
           <TouchableOpacity
             style={styles.card}
-            onPress={() => router.push({ pathname: '/camera', params: { crop: 'Tomato' } })}
+            onPress={() => router.push({ pathname: "/camera", params: { crop: "Tomato" } })}
           >
             <View style={styles.cardContent}>
-              <Image source={require('../assets/kamatis.webp')} style={styles.cardLogo} />
+              <Image source={require("../assets/kamatis.webp")} style={styles.cardLogo} />
               <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>
-                  Tomato <Text style={styles.italic}>(Kamatis)</Text>
-                </Text>
+                <Text style={styles.cardTitle}>{language === "EN" ? "Tomato" : "Kamatis"}</Text>
                 <Text style={styles.cardSubtitle}>
-                  Capture image of a leaf to know more about
+                  {language === "EN"
+                    ? "Capture image of a leaf to know more about your crop's condition"
+                    : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
                 </Text>
               </View>
             </View>
           </TouchableOpacity>
         </View>
-     
-  
-      {menuVisible && (
-        <TouchableOpacity 
-          style={styles.overlay} 
-          activeOpacity={1} 
-          onPress={toggleMenu} 
-        />
-      )}
+      </ScrollView>
 
-  
-      <Animated.View style={[styles.drawer, { transform: [{ translateX: drawerAnim }] }]}>
-        <View style={styles.drawerHeader}>
-          <TouchableOpacity onPress={toggleMenu} style={styles.iconWrapper}>
-            <Ionicons name="arrow-back" size={32} color="#000" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.drawerContent}>
-          <TouchableOpacity
-            style={styles.largeCard}
-            onPress={() => {
-              toggleMenu();
-              router.push('/history');
-            }}
-          >
-            <Text style={styles.largeCardText}>Record History</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.largeCard}
-            onPress={() => {
-              toggleMenu();
-              router.push('/review');
-            }}
-          >
-            <Text style={styles.largeCardText}>View Ratings / Reviews</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.largeCard}
-            onPress={() => {
-              toggleMenu();
-              router.push('/about');
-            }}
-          >
-            <Text style={styles.largeCardText}>About App</Text>
-          </TouchableOpacity>
+      {/* Bottom Navigation Bar */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity onPress={() => router.push("/history")} style={styles.navItem}>
+          <Ionicons name="time" size={24} color="black" />
+          <Text style={styles.navText}>{language === "EN" ? "History" : "Kasaysayan"}</Text>
+        </TouchableOpacity>
 
-  <TouchableOpacity
-            style={styles.largeCard}
-            onPress={() => {
-              toggleMenu();
-              router.push('/login');
-            }}
-          >
-            <Text style={styles.largeCardText}>Logout</Text>
-          </TouchableOpacity>  
+        <TouchableOpacity onPress={() => router.push("/review")} style={styles.navItem}>
+          <Ionicons name="star" size={24} color="black" />
+          <Text style={styles.navText}>{language === "EN" ? "Ratings" : "Rating"}</Text>
+        </TouchableOpacity>
 
-        </View>
-      </Animated.View>
-    </ScrollView>
+        <TouchableOpacity onPress={() => router.push("/about")} style={styles.navItem}>
+          <Ionicons name="information-circle" size={24} color="black" />
+          <Text style={styles.navText}>{language === "EN" ? "About" : "Tungkol"}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push("/login")} style={styles.navItem}>
+          <Ionicons name="log-out" size={24} color="black" />
+          <Text style={styles.navText}>{language === "EN" ? "Logout" : "Logout"}</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -180,158 +136,95 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: "#F7F7F7",
   },
   header: {
-    backgroundColor: '#3E6E53F7',
-    paddingTop: 60,
-    paddingBottom: 75,
-    alignItems: 'flex-start',
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    position: 'relative',
-    paddingLeft: 20,
-    marginBottom: 20,
-    zIndex: 1,
+    backgroundColor: "#C2A868",
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+    paddingTop: 10, 
+    borderBottomLeftRadius:30,
+    borderBottomRightRadius:30
+  },
+  languageToggle: {
+    position: "absolute",
+    top: 15,
+    right: 15,
+    padding: 10,
+  },
+  headerContent: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  logo: {
+    width: 60,
+    height: 70,
+    resizeMode: "contain",
+    marginBottom: 5,
   },
   headerTitle: {
-    fontSize: 18,
-    color: '#FFF',
-    textAlign: 'left',
-    marginBottom: 5,
-    fontFamily: 'OpenSans',
-  },
-  burgerButton: {
-    position: 'absolute',
-    top: 10,
-    left: 20,
-    zIndex: 10,
-  },
-  burgerIcon: {
-    width: 32,
-    height: 24,
-    justifyContent: 'space-between',
-  },
-  burgerLine: {
-    height: 3,
-    backgroundColor: '#fff',
-    borderRadius: 1,
+    fontSize: 16,
+    color: "#FFF",
+    fontWeight: "600",
+    textAlign: "left",
+    maxWidth: "90%", // Prevents overflow
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 80,
   },
   content: {
-    marginTop: -60,
-    alignItems: 'center',
-    zIndex: 2,
+    alignItems: "center",
+    marginTop: -10,
   },
   card: {
-    backgroundColor: '#D5EBDF',
-    width: '90%',
-    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
+    width: "90%",
+    borderRadius: 15,
     marginBottom: 15,
     padding: 20,
     elevation: 5,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    borderWidth: 2,
-    borderColor: '#d5e8c0',
   },
   cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
   },
   cardRight: {
     flex: 1,
     marginLeft: 15,
-    alignItems: 'center',
   },
   cardLogo: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 3,
-    borderColor: '#84AA80',
-    backgroundColor: '#fff',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   cardTitle: {
     fontSize: 18,
-    color: '#000',
-    fontWeight: '600',
-    marginBottom: 5,
-    textAlign: 'center',
-    fontFamily: 'OpenSans',
-  },
-  italic: {
-    fontStyle: 'italic',
+    fontWeight: "600",
+    color: "#000",
   },
   cardSubtitle: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
     marginTop: 5,
-    textAlign: 'center',
-    fontFamily: 'OpenSans',
   },
-  overlay: {
-    position: 'absolute',
-    top: 0,
+  bottomNav: {
+    position: "absolute",
+    bottom: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    zIndex: 100,
+    backgroundColor: "#FFF",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 10,
   },
-  drawer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: DRAWER_WIDTH,
-    backgroundColor: '#fffe',
-    zIndex: 101,
+  navItem: {
+    alignItems: "center",
   },
-  drawerHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 50,
-    paddingBottom: 10,
-    paddingTop: 15,
-  },
-  iconWrapper: {
-    marginRight: 175,
-    padding: 3,
-    
-  },
-  drawerContent: {
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  largeCard: {
-    backgroundColor: '#E5F1E0',
-    width: '100%',
-    borderRadius: 20,
-    marginBottom: 20,
-    padding: 20,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  largeCardText: {
-    fontSize: 18,
-    color: '#000',
-    fontWeight: '600',
-    textAlign: 'center',
-    fontFamily: 'OpenSans',
-  },
-  logo: {
-    position: 'absolute',
-    top: 10,
-    right: 20,
-    width: 58,
-    height: 50,
+  navText: {
+    fontSize: 12,
+    marginTop: 3,
   },
 });

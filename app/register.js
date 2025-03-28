@@ -6,10 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ImageBackground
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+
 
 const Register = () => {
   const router = useRouter();
@@ -55,10 +56,7 @@ const Register = () => {
   };
 
   return (
-    <LinearGradient
-      colors={["#94C999", "#7FB084", "#629467", "#437347"]}
-      style={styles.container}
-    >
+    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}> 
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={30} color="white" />
       </TouchableOpacity>
@@ -148,7 +146,7 @@ const Register = () => {
       <TouchableOpacity onPress={() => router.push("/login")}>
         <Text style={styles.link}>Already have an account? Login</Text>
       </TouchableOpacity>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
@@ -172,7 +170,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     fontFamily: "OpenSans",
-    color: "white",
+    color: "black",
   },
   inputContainer: {
     flexDirection: "row",

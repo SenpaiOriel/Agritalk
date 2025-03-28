@@ -5,7 +5,8 @@ import {
   TextInput, 
   TouchableOpacity, 
   StyleSheet, 
-  Alert 
+  Alert ,
+  ImageBackground
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -33,9 +34,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <LinearGradient 
-    colors={['#94C999', '#7FB084', '#629467', '#437347']}
-    style={styles.container}>
+    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={30} color="black" />
       </TouchableOpacity>
@@ -56,7 +55,7 @@ const ForgotPassword = () => {
       <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
         <Text style={styles.buttonText}>Send Reset Link</Text>
       </TouchableOpacity>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
