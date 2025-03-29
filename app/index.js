@@ -58,6 +58,9 @@ const LoadingScreen = () => {
 
   return (
     <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}>
+      {/* Dark overlay for shadow effect */}
+      <View style={styles.overlay} />
+      
       <View style={styles.content}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
         <View style={styles.loadingContainer}>
@@ -77,22 +80,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    shadowOpacity: 50
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject, // Covers the entire screen
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay with 50% opacity
   },
   content: {
     alignItems: 'center',
+    position: 'absolute', // Ensures content is above overlay
   },
   logo: {
     width: 115,
     height: 100,
-    marginBottom: 30,
+    marginBottom: 10,
   },
   loadingContainer: {
     flexDirection: 'row',
   },
   dot: {
-    width: 10,
-    height: 10,
+    width: 5,
+    height: 5,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     marginHorizontal: 5,
