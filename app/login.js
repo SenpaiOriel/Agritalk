@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image,ImageBackground} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -14,19 +14,16 @@ const Login = () => {
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
-    setErrorMessage(''); // Clear error when user starts typing
+    setErrorMessage('');
   };
 
   const validateIdentifier = (identifier) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    
-    return emailRegex.test(identifier)
+    return emailRegex.test(identifier);
   };
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    return passwordRegex.test(password);
+    return password.length >= 6;
   };
 
   const handleLogin = () => {
@@ -36,167 +33,148 @@ const Login = () => {
     }
 
     if (!validateIdentifier(form.identifier)) {
-      setErrorMessage('Please Enter valid email address!! ');
+      setErrorMessage('Please enter a valid email address');
       return;
     }
 
     if (!validatePassword(form.password)) {
-      setErrorMessage(
-        'Your password input is incorrect..'
-      );
+      setErrorMessage('Password must be at least 6 characters long');
       return;
     }
 
-    // If login is successful (you can adjust this to check credentials)
     setErrorMessage('');
     router.push('/dashboard');
   };
 
   return (
-    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}> 
-      <View style={styles.logo}>
-        <Image 
-          source={require('../assets/logo.png')} 
-          style={styles.logoImage} 
-        />
+    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
-
-      {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
-
-      <View style={styles.inputContainer}>
-        <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
-        <TextInput
-          placeholder="Email"
-          style={styles.input}
-          autoCapitalize="none"
-          onChangeText={text => handleChange('identifier', text)}
-        />
-      </View>
-      
-      <View style={styles.passwordContainer}>
-        <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
-        <TextInput
-          placeholder="Password"
-          style={styles.passwordInput}
-          secureTextEntry={!showPassword}
-          autoCapitalize="none"
-          onChangeText={text => handleChange('password', text)}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-          <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
+      <View style={styles.formContainer}>
+        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
+          <TextInput
+            placeholder="Email"
+            style={styles.input}
+            autoCapitalize="none"
+            onChangeText={text => handleChange('identifier', text)}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
+          <TextInput
+            placeholder="Enter Password"
+            style={styles.input}
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+            onChangeText={text => handleChange('password', text)}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={() => router.push('/forgot-password')}>
+          <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <Text style={styles.registerText}>Don't have an Account? <Text style={styles.registerLink} onPress={() => router.push('/register')}>Register</Text></Text>
       </View>
-
-      <TouchableOpacity onPress={() => router.push('/forgot-password')}>
-        <Text style={styles.forgotPassword}>Forgot Password?</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={styles.link}>Don't have an account? Register</Text>
-      </TouchableOpacity>
-     </ImageBackground>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 50,
+  logoContainer: {
+    marginTop: 130,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+ formContainer: {
+    width: "100%",
+    backgroundColor: "#fff",
+    padding: 25,
+    borderRadius: 25,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius:5
+  },
+ inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    height: 53,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
+    borderColor: "#ccc",
+    borderRadius: 20,
     paddingHorizontal: 15,
-    marginBottom: 10,
-    backgroundColor: '#fff'
+    marginBottom: 15,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
+
   input: {
     flex: 1,
-    marginLeft: 10,
-    fontFamily: 'OpenSans',
-    fontSize: 16
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    backgroundColor: '#fff'
-  },
-  passwordInput: {
-    flex: 1,
-    marginLeft: 10,
-    fontFamily: 'OpenSans',
-    fontSize: 16
-  },
-  eyeIcon: {
+    fontSize: 16,
     paddingHorizontal: 10
   },
   icon: {
-    marginRight: 10
+    marginRight: 10,
   },
   button: {
-    backgroundColor: '#809a03',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 10
-  },
+  backgroundColor: "#d4af37", // Yellowish color
+  paddingVertical: 12,
+  paddingHorizontal: 40,  // Adjusted for a shorter width
+  borderRadius: 20,
+  alignItems: "center",
+  alignSelf: "center", // Centers the button
+  marginTop: 10,
+},
   buttonText: {
     color: '#FFF',
     fontSize: 18,
-    fontFamily: 'OpenSans-Bold'
+    fontWeight: 'bold',
   },
-  link: {
-    marginTop: 10,
-    color: '#000',
-    fontFamily: 'OpenSans',
-    fontSize: 16,
-    textDecorationLine: 'underline',
-    color:"blue"
+  registerText: {
+    marginTop: 15,
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  registerLink: {
+    color: 'black',
   },
   forgotPassword: {
-    marginTop: 5,
     marginBottom: 10,
-    color: '#000',
-    textDecorationLine: 'underline',
+    color: 'black',
     textAlign: 'center',
-    fontFamily: 'OpenSans',
     fontSize: 14,
-    color:"blue"
-  },
-  logo: {
-    width: 115,
-    height: 100,
-    marginBottom: 15,
-  },
-  logoImage: {
-    width: '80%',
-    height: '80%',
+    alignContent:"right"
   },
   errorMessage: {
-    color: '#ff4d4d',
+    color: 'red',
     fontSize: 14,
     marginBottom: 10,
     textAlign: 'center',
-    fontFamily: 'OpenSans'
-  }
+  },
 });
 
 export default Login;

@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Image,
   ImageBackground
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-
 
 const Register = () => {
   const router = useRouter();
@@ -27,28 +27,9 @@ const Register = () => {
     setForm({ ...form, [key]: value });
   };
 
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isValidPassword = (password) =>
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password);
-
   const handleRegister = () => {
     if (!form.email || !form.password || !form.confirmPassword) {
       Alert.alert("Error", "All fields are required");
-      return;
-    }
-    if (!isValidEmail(form.email)) {
-      Alert.alert("Error", "Invalid email format");
-      return;
-    }
-    if (!isValidPassword(form.password)) {
-      Alert.alert(
-        "Error",
-        "Password must be at least 8 characters and contain uppercase, lowercase, and a number"
-      );
-      return;
-    }
-    if (form.password !== form.confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
       return;
     }
     Alert.alert("Success", "Registration Successful");
@@ -57,95 +38,69 @@ const Register = () => {
 
   return (
     <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}> 
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={30} color="white" />
-      </TouchableOpacity>
-
-      <Text style={styles.title}>Register</Text>
-
-      <View style={styles.inputContainer}>
-        <Ionicons
-          name="person-outline"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          placeholder="Fullname"
-          style={styles.input}
-          keyboardType="name"
-          onChangeText={(text) => handleChange("fullname", text)}
-        />
+      
+      {/* Logo */}
+      <View style={styles.logoContainer}>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
 
-      <View style={styles.inputContainer}>
-        <Ionicons
-          name="mail-outline"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          placeholder="Email"
-          style={styles.input}
-          keyboardType="email-address"
-          onChangeText={(text) => handleChange("email", text)}
-        />
-      </View>
+      {/* Form */}
+      <View style={styles.formContainer}>
 
-      <View style={styles.passwordContainer}>
-        <Ionicons
-          name="lock-closed-outline"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          placeholder="Password"
-          style={styles.passwordInput}
-          secureTextEntry={!showPassword}
-          onChangeText={(text) => handleChange("password", text)}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Ionicons
-            name={showPassword ? "eye-off" : "eye"}
-            size={24}
-            color="gray"
+        <View style={styles.inputContainer}>
+          <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
+          <TextInput
+            placeholder="Fullname"
+            style={styles.input}
+            onChangeText={(text) => handleChange("fullname", text)}
           />
-        </TouchableOpacity>
-      </View>
+        </View>
 
-      <View style={styles.passwordContainer}>
-        <Ionicons
-          name="lock-closed-outline"
-          size={24}
-          color="gray"
-          style={styles.icon}
-        />
-        <TextInput
-          placeholder="Confirm Password"
-          style={styles.passwordInput}
-          secureTextEntry={!showConfirmPassword}
-          onChangeText={(text) => handleChange("confirmPassword", text)}
-        />
-        <TouchableOpacity
-          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-        >
-          <Ionicons
-            name={showConfirmPassword ? "eye-off" : "eye"}
-            size={24}
-            color="gray"
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
+          <TextInput
+            placeholder="Email"
+            style={styles.input}
+            keyboardType="email-address"
+            onChangeText={(text) => handleChange("email", text)}
           />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
+          <TextInput
+            placeholder="Enter Password"
+            style={styles.input}
+            secureTextEntry={!showPassword}
+            onChangeText={(text) => handleChange("password", text)}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
+          <TextInput
+            placeholder="Confirm Password"
+            style={styles.input}
+            secureTextEntry={!showConfirmPassword}
+            onChangeText={(text) => handleChange("confirmPassword", text)}
+          />
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={24} color="gray" />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push("/login")}>
+          <Text style={styles.link}>Already have an Account? Login</Text>
+        </TouchableOpacity>
+
       </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => router.push("/login")}>
-        <Text style={styles.link}>Already have an account? Login</Text>
-      </TouchableOpacity>
     </ImageBackground>
   );
 };
@@ -155,75 +110,72 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    justifyContent: "flex-end",
   },
-  backButton: {
+  logoContainer: {
     position: "absolute",
-    top: 30,
-    left: 20,
-    zIndex: 1,
+    top: 120,
+    alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    fontFamily: "OpenSans",
-    color: "black",
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+  },
+  formContainer: {
+    width: "100%",
+    backgroundColor: "#fff",
+    padding: 25,
+    borderRadius: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius:5
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    height: 50,
+    height: 53,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10,
+    borderRadius: 20,
     paddingHorizontal: 15,
-    marginBottom: 10,
+    marginBottom: 15,
     backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   input: {
     flex: 1,
-    marginLeft: 10,
-    fontFamily: "OpenSans",
+    fontSize: 16,
+    paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: "#809a03",
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 10,
-    marginTop: 10,
-  },
+  backgroundColor: "#d4af37", // Yellowish color
+  paddingVertical: 12,
+  paddingHorizontal: 40,  // Adjusted for a shorter width
+  borderRadius: 20,
+  alignItems: "center",
+  alignSelf: "center", // Centers the button
+  marginTop: 10,
+},
   buttonText: {
     color: "#FFF",
     fontSize: 18,
     fontWeight: "bold",
-    fontFamily: "OpenSans",
   },
   link: {
     marginTop: 10,
     color: "black",
-    textDecorationLine: "underline",
-    fontFamily: "OpenSans",
-  },
-  passwordContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    backgroundColor: "#fff",
-  },
-  passwordInput: {
-    flex: 1,
-    marginLeft: 10,
-    fontFamily: "OpenSans",
+    textAlign: "center",
   },
   icon: {
     marginRight: 10,

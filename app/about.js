@@ -75,13 +75,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
  header: {
-    backgroundColor: '#2E593F',
+    backgroundColor: '#C2A868',
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    // borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
   },
   backButton: {
     padding: 5,

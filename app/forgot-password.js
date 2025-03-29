@@ -64,8 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#2E593F'
+    padding: 20
   },
   backButton: {
     position: 'absolute',

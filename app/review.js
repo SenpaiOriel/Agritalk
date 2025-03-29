@@ -321,14 +321,14 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: 65,
-    backgroundColor: '#3E6E53',
+    backgroundColor: '#C2A868',
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 15,
     zIndex: 0,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
+    // borderBottomLeftRadius: 25,
+    // borderBottomRightRadius: 25,
   },
   backButton: {
     padding: 8,
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontFamily: 'OpenSans',
     marginLeft: 10,
-    marginTop: 0,
+    marginBottom:10
   },
   card: {
     backgroundColor: '#F4F4F4',
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 20,
-    backgroundColor: '#9CC0A0',
+    backgroundColor: '#C2A868',
     paddingVertical: 14,
     borderRadius: 12,
     elevation: 3,
@@ -527,7 +527,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
   },
   okButton: {
-    backgroundColor: '#1B5E20',
+    backgroundColor: '#C2A868',
     paddingVertical: 12,
     paddingHorizontal: 30,
     borderRadius: 12,
