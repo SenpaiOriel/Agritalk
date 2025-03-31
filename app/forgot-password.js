@@ -5,18 +5,19 @@ import {
   TextInput, 
   TouchableOpacity, 
   StyleSheet, 
-  Alert ,
-  ImageBackground
+  Alert,
+  ImageBackground 
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const ForgotPassword = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [isCodeSent, setIsCodeSent] = useState(false);
 
-  const handleResetPassword = () => {
+  const handleSendCode = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (!email) {
@@ -29,8 +30,18 @@ const ForgotPassword = () => {
       return;
     }
 
-    Alert.alert('Success', 'A password reset link has been sent to your email.Please check the message to email you provide');
-    router.push('/login');
+    setIsCodeSent(true);
+    Alert.alert('Success', 'A verification code has been sent to your email.');
+  };
+
+  const handleVerifyCode = () => {
+    if (!code) {
+      Alert.alert('Error', 'Please enter the verification code');
+      return;
+    }
+    
+    Alert.alert('Success', 'Code verified! You can now reset your password.');
+    router.push('/reset-password');
   };
 
   return (
@@ -40,21 +51,40 @@ const ForgotPassword = () => {
       </TouchableOpacity>
       
       <Text style={styles.title}>Forgot Password</Text>
-      <Text style={styles.subtitle}>Enter your email to receive a reset link</Text>
       
-      <View style={styles.inputContainer}>
-        <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
-        <TextInput 
-          placeholder="Email" 
-          style={styles.input} 
-          keyboardType="email-address"
-          onChangeText={text => setEmail(text)}
-        />
-      </View>
-      
-      <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-        <Text style={styles.buttonText}>Send Reset Link</Text>
-      </TouchableOpacity>
+      {!isCodeSent ? (
+        <>
+          <Text style={styles.subtitle}>Enter your email to receive a verification code</Text>
+          <View style={styles.inputContainer}>
+            <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
+            <TextInput 
+              placeholder="Email" 
+              style={styles.input} 
+              keyboardType="email-address"
+              onChangeText={text => setEmail(text)}
+            />
+          </View>
+          <TouchableOpacity style={styles.button} onPress={handleSendCode}>
+            <Text style={styles.buttonText}>Send Code</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <Text style={styles.subtitle}>Enter the verification code sent to your email</Text>
+          <View style={styles.inputContainer}>
+            <Ionicons name="key-outline" size={24} color="gray" style={styles.icon} />
+            <TextInput 
+              placeholder="Enter Code" 
+              style={styles.input} 
+              keyboardType="numeric"
+              onChangeText={text => setCode(text)}
+            />
+          </View>
+          <TouchableOpacity style={styles.button} onPress={handleVerifyCode}>
+            <Text style={styles.buttonText}>Verify Code</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </ImageBackground>
   );
 };
@@ -75,14 +105,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-    fontFamily: 'OpenSans'
+    marginBottom: 10
   },
   subtitle: {
     fontSize: 16,
     color: '#555',
-    marginBottom: 20,
-    fontFamily: 'OpenSans'
+    marginBottom: 20
   },
   inputContainer: {
     flexDirection: 'row',
@@ -98,8 +126,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    marginLeft: 10,
-    fontFamily: 'OpenSans'
+    marginLeft: 10
   },
   button: {
     backgroundColor: '#809a03',
@@ -110,8 +137,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#FFF',
     fontSize: 18,
-    fontWeight: 'bold',
-    fontFamily: 'OpenSans'
+    fontWeight: 'bold'
   }
 });
 
