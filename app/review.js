@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     marginBottom:10
   },
   card: {
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#E0E0E0',
     padding: 25,
     paddingBottom: 30,
     borderRadius: 20,
@@ -359,7 +359,8 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     zIndex: 2,
     position: 'relative',
-    bottom: 15
+    bottom: 15,
+    borderColor:'#4CAF50'
   },
   title: {
     fontSize: 26,
@@ -493,6 +494,7 @@ const styles = StyleSheet.create({
     fontFamily: 'OpenSans',
   },
   modalContainer: {
+    borderRadius: 20,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -505,7 +507,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '85%',
     elevation: 5,
-  },
+    borderWidth: 2,
+    borderColor: '#4CAF50', 
+},
   modalIconContainer: {
     backgroundColor: '#E8F5E9',
     padding: 20,
