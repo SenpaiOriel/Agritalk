@@ -16,15 +16,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const FeedbackScreen = () => {
+  const router = useRouter();
+  const { language } = useLanguage();
+  const t = translations[language];
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [selectedReview, setSelectedReview] = useState(null);
   const inputRef = useRef(null);
-  const router = useRouter();
 
   useEffect(() => {
     loadReviews();
@@ -81,22 +85,22 @@ const FeedbackScreen = () => {
 
   const handleDeleteReview = (id) => {
     Alert.alert(
-      '🗑️ Delete Review',
-      'This action cannot be undone.',
+      '🗑️ Tanggalin ang Review',
+      'Hindi na maaaring ibalik ang aksyong ito.',
       [
         { 
-          text: '↩️ Keep',
+          text: '↩️ Panatilihin',
           style: 'cancel',
         },
         {
-          text: '🗑️ Delete',
+          text: '🗑️ Tanggalin',
           onPress: () => {
             const updatedReviews = reviews.filter((review) => review.id !== id);
             setReviews(updatedReviews);
             saveReviews(updatedReviews);
             Alert.alert(
-              '✅ Success',
-              'Review deleted',
+              '✅ Tagumpay',
+              'Na-tanggal ang review',
               [{ text: 'OK' }],
               { 
                 cancelable: true,
@@ -167,21 +171,21 @@ const FeedbackScreen = () => {
         <TouchableOpacity
           onPress={() =>
             Alert.alert(
-              '✏️ Review Actions',
-              'Choose an action:',
+              '✏️ Mga Aksyon sa Review',
+              'Pumili ng aksyon:',
               [
                 {
-                  text: '📝 Edit',
+                  text: '📝 I-edit',
                   onPress: () => handleEditReview(item),
                   style: 'default',
                 },
                 {
-                  text: '🗑️ Delete',
+                  text: '🗑️ Tanggalin',
                   onPress: () => handleDeleteReview(item.id),
                   style: 'destructive',
                 },
                 {
-                  text: '❌ Cancel',
+                  text: '❌ Kanselahin',
                   style: 'cancel',
                 },
               ],
@@ -199,7 +203,7 @@ const FeedbackScreen = () => {
 
       {/* Feedback Text */}
       <Text style={styles.reviewText}>
-        {item.feedback || 'No comment provided.'}
+        {item.feedback || t.noComment}
       </Text>
     </View>
   );
@@ -211,7 +215,7 @@ const FeedbackScreen = () => {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Feedback</Text>
+        <Text style={styles.headerTitle}>{t.feedback}</Text>
       </View>
 
       <ScrollView 
@@ -220,9 +224,9 @@ const FeedbackScreen = () => {
       >
         {/* Feedback Card */}
         <View style={styles.card}>
-          <Image source={require('../assets/logo.png')} style={[styles.icon, { width: 70, height: 54,  alignSelf: 'center', marginBottom: 10 }]} />
-          <Text style={styles.title}>How's your experience?</Text>
-          <Text style={styles.subtitle}>Your feedback helps us improve our service</Text>
+          <Image source={require('../assets/logo.png')} style={[styles.icon, { width: 100, height: 77, alignSelf: 'center', marginBottom: 10, opacity: 1 }]} />
+          <Text style={styles.title}>{t.experience}</Text>
+          <Text style={styles.subtitle}>{t.feedbackHelp}</Text>
           <View style={styles.starsContainer}>
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity 
@@ -239,17 +243,17 @@ const FeedbackScreen = () => {
             ))}
           </View>
           <Text style={styles.ratingText}>
-            {rating === 0 ? 'Tap a star to rate' :
-             rating === 1 ? 'Poor' :
-             rating === 2 ? 'Fair' :
-             rating === 3 ? 'Good' :
-             rating === 4 ? 'Very Good' : 'Excellent'}
+            {rating === 0 ? t.tapToRate :
+             rating === 1 ? t.poor :
+             rating === 2 ? t.fair :
+             rating === 3 ? t.good :
+             rating === 4 ? t.veryGood : t.excellent}
           </Text>
-          <Text style={styles.feedbackLabel}>Share your thoughts (optional):</Text>
+          <Text style={styles.feedbackLabel}>{t.shareThoughts}</Text>
           <TextInput
             ref={inputRef}
             style={styles.input}
-            placeholder="Tell us what you think..."
+            placeholder={t.tellUs}
             value={feedback}
             onChangeText={setFeedback}
             multiline
@@ -261,15 +265,15 @@ const FeedbackScreen = () => {
             disabled={rating === 0}
           >
             <Text style={styles.submitText}>
-              {selectedReview ? 'Update Review' : 'Submit Review'}
+              {selectedReview ? t.updateReview : t.submitReview}
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Reviews Header */}
         <View style={styles.reviewsHeader}>
-          <Text style={styles.reviewsTitle}>Community Reviews</Text>
-          <Text style={styles.reviewsSubtitle}>See what others are saying</Text>
+          <Text style={styles.reviewsTitle}>{t.communityReviews}</Text>
+          <Text style={styles.reviewsSubtitle}>{t.seeOthers}</Text>
         </View>
 
         {/* List of Reviews */}
@@ -283,8 +287,8 @@ const FeedbackScreen = () => {
             ListEmptyComponent={
               <View style={styles.emptyReviews}>
                 <Ionicons name="chatbubble-outline" size={50} color="#CCC" />
-                <Text style={styles.emptyReviewsText}>No reviews yet</Text>
-                <Text style={styles.emptyReviewsSubtext}>Be the first to share your thoughts!</Text>
+                <Text style={styles.emptyReviewsText}>{t.noReviews}</Text>
+                <Text style={styles.emptyReviewsSubtext}>{t.beFirst}</Text>
               </View>
             }
           />
@@ -298,10 +302,10 @@ const FeedbackScreen = () => {
             <View style={styles.modalIconContainer}>
               <Ionicons name="checkmark-circle" size={60} color="#4CAF50" />
             </View>
-            <Text style={styles.modalTitle}>Thank You!</Text>
-            <Text style={styles.modalText}>Your feedback helps us serve you better.</Text>
+            <Text style={styles.modalTitle}>{t.thankYou}</Text>
+            <Text style={styles.modalText}>{t.feedbackHelps}</Text>
             <TouchableOpacity style={styles.okButton} onPress={closeModal}>
-              <Text style={styles.okText}>Continue</Text>
+              <Text style={styles.okText}>{t.continue}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -356,11 +360,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: '#4CAF50',
     zIndex: 2,
     position: 'relative',
-    bottom: 15,
-    borderColor:'#4CAF50'
+    bottom: 15
   },
   title: {
     fontSize: 26,
@@ -498,6 +501,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderColor:'#4CAF50'
   },
   modalContent: {
     backgroundColor: '#FFF',
@@ -506,14 +510,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '85%',
     elevation: 5,
-    borderWidth: 2,
-    borderColor: '#4CAF50', 
-},
+  },
   modalIconContainer: {
     backgroundColor: '#E8F5E9',
     padding: 20,
     borderRadius: 50,
     marginBottom: 20,
+    borderColor:'#4CAF50',
   },
   modalTitle: {
     fontSize: 24,

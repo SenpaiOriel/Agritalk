@@ -3,9 +3,13 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Linking } from 'r
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const AboutScreen = () => {
   const router = useRouter();
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
 
   const handlePress = (url) => {
     Linking.openURL(url).catch((err) => console.error('Failed to open URL:', err));
@@ -18,28 +22,28 @@ const AboutScreen = () => {
         <TouchableOpacity onPress={() => router.replace('/dashboard')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>About</Text>
+        <Text style={styles.headerTitle}>{t.aboutTitle}</Text>
       </View>
 
       {/* Content */}
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>CropMD</Text>
         <Text style={styles.paragraph}>
-          Welcome to CropMD, the app designed to help you protect your crops and grow with confidence!
+          {t.welcome}
         </Text>
         <Text style={styles.paragraph}>
-          With our easy-to-use interface, you can capture images of your crops to learn about common diseases and receive guidance on proper crop care.
+          {t.easyToUse}
         </Text>
         <Text style={styles.paragraph}>
-          Our mission is to empower farmers with modern tools and reliable insights to ensure a bountiful harvest every season.
+          {t.mission}
         </Text>
         <Text style={styles.paragraph}>
-          For support, suggestions, or feedback, please reach out to our team. We are constantly working to improve your experience.
+          {t.support}
         </Text>
 
         {/* Contact Section */}
         <View style={styles.contactSection}>
-          <Text style={styles.contactTitle}>Contact Us</Text>
+          <Text style={styles.contactTitle}>{t.contactUs}</Text>
           <TouchableOpacity
             style={styles.contactItem}
             onPress={() => handlePress('mailto:CropMD@gmail.com')}

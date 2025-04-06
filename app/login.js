@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const Login = () => {
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = translations[language];
   const [form, setForm] = useState({
     identifier: '',
     password: ''
@@ -28,17 +32,17 @@ const Login = () => {
 
   const handleLogin = () => {
     if (!form.identifier || !form.password) {
-      setErrorMessage('Please fill in all fields');
+      setErrorMessage(t.fillAllFields);
       return;
     }
 
     if (!validateIdentifier(form.identifier)) {
-      setErrorMessage('Please enter a valid email address');
+      setErrorMessage(t.invalidEmail);
       return;
     }
 
     if (!validatePassword(form.password)) {
-      setErrorMessage('Password must be at least 6 characters long');
+      setErrorMessage(t.invalidPassword);
       return;
     }
 
@@ -56,7 +60,7 @@ const Login = () => {
         <View style={styles.inputContainer}>
           <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
           <TextInput
-            placeholder="Email"
+            placeholder={t.email}
             style={styles.input}
             autoCapitalize="none"
             onChangeText={text => handleChange('identifier', text)}
@@ -65,7 +69,7 @@ const Login = () => {
         <View style={styles.inputContainer}>
           <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
           <TextInput
-            placeholder="Enter Password"
+            placeholder={t.password}
             style={styles.input}
             secureTextEntry={!showPassword}
             autoCapitalize="none"
@@ -76,12 +80,12 @@ const Login = () => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => router.push('/forgot-password')}>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
+          <Text style={styles.forgotPassword}>{t.forgotPassword}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={styles.buttonText}>{t.login}</Text>
         </TouchableOpacity>
-        <Text style={styles.registerText}>Don't have an Account? <Text style={styles.registerLink} onPress={() => router.push('/register')}>Register</Text></Text>
+        <Text style={styles.registerText}>{t.noAccount} <Text style={styles.registerLink} onPress={() => router.push('/register')}>{t.register}</Text></Text>
       </View>
     </ImageBackground>
   );

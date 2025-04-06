@@ -11,9 +11,13 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const Register = () => {
   const router = useRouter();
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
   const [form, setForm] = useState({
     fullname: "",
     email: "",
@@ -29,10 +33,10 @@ const Register = () => {
 
   const handleRegister = () => {
     if (!form.email || !form.password || !form.confirmPassword) {
-      Alert.alert("Error", "All fields are required");
+      Alert.alert("Error", t.allFieldsRequired);
       return;
     }
-    Alert.alert("Success", "Registration Successful");
+    Alert.alert("Success", t.registrationSuccess);
     router.replace("/login");
   };
 
@@ -50,7 +54,7 @@ const Register = () => {
         <View style={styles.inputContainer}>
           <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
           <TextInput
-            placeholder="Fullname"
+            placeholder={t.fullname}
             style={styles.input}
             onChangeText={(text) => handleChange("fullname", text)}
           />
@@ -59,7 +63,7 @@ const Register = () => {
         <View style={styles.inputContainer}>
           <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
           <TextInput
-            placeholder="Email"
+            placeholder={t.email}
             style={styles.input}
             keyboardType="email-address"
             onChangeText={(text) => handleChange("email", text)}
@@ -69,7 +73,7 @@ const Register = () => {
         <View style={styles.inputContainer}>
           <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
           <TextInput
-            placeholder="Enter Password"
+            placeholder={t.password}
             style={styles.input}
             secureTextEntry={!showPassword}
             onChangeText={(text) => handleChange("password", text)}
@@ -82,7 +86,7 @@ const Register = () => {
         <View style={styles.inputContainer}>
           <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
           <TextInput
-            placeholder="Confirm Password"
+            placeholder={t.confirmPassword}
             style={styles.input}
             secureTextEntry={!showConfirmPassword}
             onChangeText={(text) => handleChange("confirmPassword", text)}
@@ -93,11 +97,11 @@ const Register = () => {
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>{t.register}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => router.push("/login")}>
-          <Text style={styles.link}>Already have an Account? Login</Text>
+          <Text style={styles.link}>{t.noAccount} {t.login}</Text>
         </TouchableOpacity>
 
       </View>

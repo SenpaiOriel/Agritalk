@@ -5,18 +5,42 @@ import {
   TouchableOpacity, 
   StyleSheet, 
   Image, 
-  ScrollView 
+  ScrollView,
+  Modal,
+  Animated
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const HomeScreen = () => {
   const router = useRouter();
-  const [language, setLanguage] = useState("EN");
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [selectedLang, setSelectedLang] = useState(language);
 
-  // Toggle Language
-  const toggleLanguage = () => {
-    setLanguage((prevLang) => (prevLang === "EN" ? "TL" : "EN"));
+  const toggleLanguageMenu = () => {
+    setShowLanguageMenu(!showLanguageMenu);
+    setSelectedLang(language);
+    Animated.timing(fadeAnim, {
+      toValue: showLanguageMenu ? 0 : 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleLanguageSelect = (lang) => {
+    setSelectedLang(lang);
+  };
+
+  const handleSelectPress = () => {
+    if (selectedLang !== language) {
+      toggleLanguage();
+    }
+    toggleLanguageMenu();
   };
 
   return (
@@ -25,8 +49,18 @@ const HomeScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           {/* Language Toggle (Top Right) */}
-          <TouchableOpacity style={styles.languageToggle} onPress={toggleLanguage}>
-            <MaterialIcons name="g-translate" size={24} color="#FFF" />
+          <TouchableOpacity 
+            style={styles.languageToggle} 
+            onPress={toggleLanguageMenu}
+          >
+            <MaterialIcons 
+              name="g-translate" 
+              size={24} 
+              color="#FFF" 
+            />
+            <Text style={styles.languageText}>
+              {language === "EN" ? "EN" : "TL"}
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.headerContent}>
@@ -35,14 +69,10 @@ const HomeScreen = () => {
 
             {/* Title (Below Logo) */}
             <Text style={styles.headerTitle}>
-              {language === "EN"
-                ? "Guard Your Crops,"
-                : "Bantayan ang Iyong Pananim, "}
+              {t.guardCrops}
             </Text>
             <Text style={styles.headerTitle}>
-              {language === "EN"
-                ? "Grow with Confidence!"
-                : " Lumago nang May Kumpiyansa!"}
+              {t.growConfidence}
             </Text>
           </View>
         </View>
@@ -57,11 +87,9 @@ const HomeScreen = () => {
             <View style={styles.cardContent}>
               <Image source={require("../assets/mais.webp")} style={styles.cardLogo} />
               <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>{language === "EN" ? "Corn" : "Mais"}</Text>
+                <Text style={styles.cardTitle}>{t.corn}</Text>
                 <Text style={styles.cardSubtitle}>
-                  {language === "EN"
-                    ? "Capture image of a leaf to know more about your crop's condition"
-                    : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
+                  {t.captureLeaf}
                 </Text>
               </View>
             </View>
@@ -75,11 +103,9 @@ const HomeScreen = () => {
             <View style={styles.cardContent}>
               <Image source={require("../assets/palay.jpg")} style={styles.cardLogo} />
               <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>{language === "EN" ? "Rice" : "Palay"}</Text>
+                <Text style={styles.cardTitle}>{t.rice}</Text>
                 <Text style={styles.cardSubtitle}>
-                  {language === "EN"
-                    ? "Capture image of a leaf to know more about your crop's condition"
-                    : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
+                  {t.captureLeaf}
                 </Text>
               </View>
             </View>
@@ -93,11 +119,9 @@ const HomeScreen = () => {
             <View style={styles.cardContent}>
               <Image source={require("../assets/kamatis.webp")} style={styles.cardLogo} />
               <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>{language === "EN" ? "Tomato" : "Kamatis"}</Text>
+                <Text style={styles.cardTitle}>{t.tomato}</Text>
                 <Text style={styles.cardSubtitle}>
-                  {language === "EN"
-                    ? "Capture image of a leaf to know more about your crop's condition"
-                    : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
+                  {t.captureLeaf}
                 </Text>
               </View>
             </View>
@@ -105,26 +129,90 @@ const HomeScreen = () => {
         </View>
       </ScrollView>
 
+      {/* Language Selection Modal */}
+      <Modal
+        visible={showLanguageMenu}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={toggleLanguageMenu}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={toggleLanguageMenu}
+        >
+          <Animated.View 
+            style={[
+              styles.languageMenu,
+              { opacity: fadeAnim }
+            ]}
+          >
+            <Text style={styles.modalTitle}>Please select prefer language</Text>
+            
+            <TouchableOpacity 
+              style={[
+                styles.languageOption,
+                selectedLang === "EN" && styles.selectedLanguage
+              ]}
+              onPress={() => handleLanguageSelect("EN")}
+            >
+              <View style={styles.languageOptionContent}>
+                <Image 
+                  source={require("../assets/us.jpg")} 
+                  style={styles.flagIcon}
+                />
+                <Text style={styles.languageOptionText}>English(US)</Text>
+              </View>
+            </TouchableOpacity>
+            
+            <View style={styles.divider} />
+            
+            <TouchableOpacity 
+              style={[
+                styles.languageOption,
+                selectedLang === "TL" && styles.selectedLanguage
+              ]}
+              onPress={() => handleLanguageSelect("TL")}
+            >
+              <View style={styles.languageOptionContent}>
+                <Image 
+                  source={require("../assets/ph.jpg")} 
+                  style={styles.flagIcon}
+                />
+                <Text style={styles.languageOptionText}>Tagalog(PH)</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.selectButton}
+              onPress={handleSelectPress}
+            >
+              <Text style={styles.selectButtonText}>Select</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </TouchableOpacity>
+      </Modal>
+
       {/* Bottom Navigation Bar */}
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => router.push("/history")} style={styles.navItem}>
           <Ionicons name="time" size={24} color="black" />
-          <Text style={styles.navText}>{language === "EN" ? "History" : "Kasaysayan"}</Text>
+          <Text style={styles.navText}>{t.history}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => router.push("/review")} style={styles.navItem}>
           <Ionicons name="star" size={24} color="black" />
-          <Text style={styles.navText}>{language === "EN" ? "Ratings" : "Rating"}</Text>
+          <Text style={styles.navText}>{t.ratings}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => router.push("/about")} style={styles.navItem}>
           <Ionicons name="information-circle" size={24} color="black" />
-          <Text style={styles.navText}>{language === "EN" ? "About" : "Tungkol"}</Text>
+          <Text style={styles.navText}>{t.about}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => router.push("/login")} style={styles.navItem}>
           <Ionicons name="log-out" size={24} color="black" />
-          <Text style={styles.navText}>{language === "EN" ? "Logout" : "Logout"}</Text>
+          <Text style={styles.navText}>{t.logout}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -150,7 +238,86 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 15,
     right: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 8,
+    borderRadius: 20,
+  },
+  languageText: {
+    color: '#FFF',
+    marginLeft: 5,
+    fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  languageMenu: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    padding: 20,
+    width: '80%',
+    maxWidth: 300,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderColor: '#4CAF50',
+    borderWidth: 2,
+  },
+  modalTitle: {
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  languageOption: {
     padding: 10,
+    borderRadius: 10,
+  },
+  selectedLanguage: {
+    backgroundColor: 'rgba(194, 168, 104, 0.1)',
+  },
+  languageOptionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  flagIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 15,
+  },
+  languageOptionText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#E5E5E5',
+    marginVertical: 10,
+  },
+  selectButton: {
+    backgroundColor: '#FFF',
+    padding: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+    marginTop: 20,
+    alignSelf: 'flex-end',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10,
+  },
+  selectButtonText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: '500',
   },
   headerContent: {
     flexDirection: "column",
@@ -167,7 +334,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontWeight: "600",
     textAlign: "left",
-    maxWidth: "90%", // Prevents overflow
+    maxWidth: "90%",
   },
   scrollContent: {
     paddingBottom: 80,

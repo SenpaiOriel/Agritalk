@@ -4,6 +4,8 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-na
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as MediaLibrary from 'expo-media-library';
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 export default function App() {
   const [facing] = useState('back');
@@ -11,6 +13,8 @@ export default function App() {
   const [photoUri, setPhotoUri] = useState(null);
   const cameraRef = useRef(null);
   const router = useRouter();
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
 
   if (!permission) {
     return <View />;
@@ -19,9 +23,9 @@ export default function App() {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Text style={styles.message}>{t.fillAllFields}</Text>
         <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.buttonText}>Grant Permission</Text>
+          <Text style={styles.buttonText}>{t.continue}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -35,7 +39,7 @@ export default function App() {
         setPhotoUri(photo.uri);
       } catch (error) {
         console.error('Failed to capture photo:', error);
-        Alert.alert('Error', 'Failed to capture photo. Please try again.');
+        Alert.alert('Error', t.fillAllFields);
       }
     }
   }
@@ -43,16 +47,16 @@ export default function App() {
   async function savePhotoToGallery(uri) {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Required', 'Please grant permission to save photos to your gallery.');
+      Alert.alert('Permission Required', t.fillAllFields);
       return;
     }
 
     try {
       await MediaLibrary.saveToLibraryAsync(uri);
-      Alert.alert('Photo Saved', 'The photo has been saved to your gallery.');
+      Alert.alert('Success', t.fillAllFields);
     } catch (error) {
       console.error('Failed to save photo:', error);
-      Alert.alert('Error', 'Failed to save photo to gallery. Please try again.');
+      Alert.alert('Error', t.fillAllFields);
     }
   }
 
@@ -64,10 +68,10 @@ export default function App() {
           <Image source={{ uri: photoUri }} style={styles.previewImage} />
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.actionButton} onPress={() => savePhotoToGallery(photoUri)}>
-              <Text style={styles.buttonText}>Save Photo</Text>
+              <Text style={styles.buttonText}>{t.savePhoto}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton} onPress={() => setPhotoUri(null)}>
-              <Text style={styles.buttonText}>Retake Photo</Text>
+              <Text style={styles.buttonText}>{t.retakePhoto}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -10,29 +10,33 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const ResetPassword = () => {
   const router = useRouter();
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleResetPassword = () => {
     if (!newPassword || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in both fields');
+      Alert.alert('Error', t.allFieldsRequired);
       return;
     }
 
     if (newPassword.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
+      Alert.alert('Error', t.passwordMustBeAtLeast6CharactersLong);
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert('Error', t.passwordsDoNotMatch);
       return;
     }
 
-    Alert.alert('Success', 'Your password has been reset successfully. You can now log in.');
+    Alert.alert('Success', t.passwordResetSuccess);
     router.push('/login');
   };
 
@@ -42,13 +46,13 @@ const ResetPassword = () => {
         <Ionicons name="arrow-back" size={30} color="black" />
       </TouchableOpacity>
       
-      <Text style={styles.title}>Reset Password</Text>
-      <Text style={styles.subtitle}>Enter your new password</Text>
+      <Text style={styles.title}>{t.resetPassword}</Text>
+      <Text style={styles.subtitle}>{t.enterNewPassword}</Text>
       
       <View style={styles.inputContainer}>
         <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
         <TextInput 
-          placeholder="New Password" 
+          placeholder={t.newPassword} 
           style={styles.input} 
           secureTextEntry
           onChangeText={text => setNewPassword(text)}
@@ -58,7 +62,7 @@ const ResetPassword = () => {
       <View style={styles.inputContainer}>
         <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
         <TextInput 
-          placeholder="Confirm Password" 
+          placeholder={t.confirmPassword} 
           style={styles.input} 
           secureTextEntry
           onChangeText={text => setConfirmPassword(text)}
@@ -66,7 +70,7 @@ const ResetPassword = () => {
       </View>
       
       <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-        <Text style={styles.buttonText}>Reset Password</Text>
+        <Text style={styles.buttonText}>{t.resetPassword}</Text>
       </TouchableOpacity>
     </ImageBackground>
   );

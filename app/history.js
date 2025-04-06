@@ -3,11 +3,15 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal,ScrollView } from 'reac
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const ScanHistoryScreen = () => {
   const [scanHistory, setScanHistory] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
 
   const handleAddScan = (uri) => {
     setScanHistory((prevHistory) => [...prevHistory, uri]);
@@ -32,12 +36,12 @@ const ScanHistoryScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Scan History</Text>
+        <Text style={styles.headerTitle}>{t.history}</Text>
       </View>
 
       {/* Screen Content */}
       <View style={styles.content}>
-        <Text style={styles.infoText}>No scan history available.</Text>
+        <Text style={styles.infoText}>{t.noReviews}</Text>
       </View>
     </ScrollView>
   );

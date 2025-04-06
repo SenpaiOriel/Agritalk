@@ -10,9 +10,13 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useLanguage } from './context/LanguageContext';
+import { translations } from './translations/translations';
 
 const ForgotPassword = () => {
   const router = useRouter();
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -21,26 +25,26 @@ const ForgotPassword = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (!email) {
-      Alert.alert('Error', 'Please enter your email');
+      Alert.alert('Error', t.fillAllFields);
       return;
     }
 
     if (!emailRegex.test(email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
+      Alert.alert('Error', t.invalidEmail);
       return;
     }
 
     setIsCodeSent(true);
-    Alert.alert('Success', 'A verification code has been sent to your email.');
+    Alert.alert('Success', t.verificationCodeSent);
   };
 
   const handleVerifyCode = () => {
     if (!code) {
-      Alert.alert('Error', 'Please enter the verification code');
+      Alert.alert('Error', t.fillAllFields);
       return;
     }
     
-    Alert.alert('Success', 'Code verified! You can now reset your password.');
+    Alert.alert('Success', t.codeVerified);
     router.push('/reset-password');
   };
 
@@ -50,38 +54,38 @@ const ForgotPassword = () => {
         <Ionicons name="arrow-back" size={30} color="black" />
       </TouchableOpacity>
       
-      <Text style={styles.title}>Forgot Password</Text>
+      <Text style={styles.title}>{t.forgotPasswordTitle}</Text>
       
       {!isCodeSent ? (
         <>
-          <Text style={styles.subtitle}>Enter your email to receive a verification code</Text>
+          <Text style={styles.subtitle}>{t.enterEmail}</Text>
           <View style={styles.inputContainer}>
             <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
             <TextInput 
-              placeholder="Email" 
+              placeholder={t.email} 
               style={styles.input} 
               keyboardType="email-address"
               onChangeText={text => setEmail(text)}
             />
           </View>
           <TouchableOpacity style={styles.button} onPress={handleSendCode}>
-            <Text style={styles.buttonText}>Send Code</Text>
+            <Text style={styles.buttonText}>{t.sendCode}</Text>
           </TouchableOpacity>
         </>
       ) : (
         <>
-          <Text style={styles.subtitle}>Enter the verification code sent to your email</Text>
+          <Text style={styles.subtitle}>{t.enterCode}</Text>
           <View style={styles.inputContainer}>
             <Ionicons name="key-outline" size={24} color="gray" style={styles.icon} />
             <TextInput 
-              placeholder="Enter Code" 
+              placeholder={t.enterCode} 
               style={styles.input} 
               keyboardType="numeric"
               onChangeText={text => setCode(text)}
             />
           </View>
           <TouchableOpacity style={styles.button} onPress={handleVerifyCode}>
-            <Text style={styles.buttonText}>Verify Code</Text>
+            <Text style={styles.buttonText}>{t.verifyCode}</Text>
           </TouchableOpacity>
         </>
       )}
