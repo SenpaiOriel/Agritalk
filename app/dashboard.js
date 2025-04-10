@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   View, 
   Text, 
@@ -7,7 +7,9 @@ import {
   Image, 
   ScrollView,
   Modal,
-  Animated
+  Animated,
+  Alert,
+  BackHandler
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -21,6 +23,24 @@ const HomeScreen = () => {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
   const [selectedLang, setSelectedLang] = useState(language);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      return true; // Prevent going back
+    });
+
+    return () => backHandler.remove();
+  }, []);
+
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogoutModal(false);
+    router.replace("/login");
+  };
 
   const toggleLanguageMenu = () => {
     setShowLanguageMenu(!showLanguageMenu);
@@ -210,11 +230,42 @@ const HomeScreen = () => {
           <Text style={styles.navText}>{t.about}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/login")} style={styles.navItem}>
+        <TouchableOpacity onPress={handleLogout} style={styles.navItem}>
           <Ionicons name="log-out" size={24} color="black" />
           <Text style={styles.navText}>{t.logout}</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        visible={showLogoutModal}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.logoutContainer}>
+            <Ionicons name="log-out" size={60} color="red" style={styles.logoutIcon} />
+            <Text style={styles.logoutTitle}>Logout Confirmation</Text>
+            <Text style={styles.logoutMessage}>Are you sure you want to logout?</Text>
+            
+            <View style={styles.logoutButtonsContainer}>
+              <TouchableOpacity 
+                style={[styles.logoutButton, styles.cancelButton]}
+                onPress={() => setShowLogoutModal(false)}
+              >
+                <Text style={styles.logoutButtonText}>No</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={[styles.logoutButton, styles.confirmButton]}
+                onPress={handleLogoutConfirm}
+              >
+                <Text style={styles.logoutButtonText}>Yes</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -393,5 +444,56 @@ const styles = StyleSheet.create({
   navText: {
     fontSize: 12,
     marginTop: 3,
+  },
+  logoutContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  logoutIcon: {
+    marginBottom: 10,
+  },
+  logoutTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  logoutMessage: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  logoutButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  logoutButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    width: '45%',
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#E0E0E0',
+  },
+  confirmButton: {
+    backgroundColor: '#d4af37',
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

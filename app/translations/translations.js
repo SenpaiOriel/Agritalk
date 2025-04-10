@@ -45,6 +45,10 @@ export const translations = {
     ratings: 'Ratings',
     about: 'About',
     logout: 'Logout',
+    logoutConfirmation: 'Logout Confirmation',
+    logoutMessage: 'Are you sure you want to logout?',
+    logoutYes: 'Yes',
+    logoutNo: 'No',
 
     // About Screen
     aboutTitle: 'About',
@@ -80,6 +84,7 @@ export const translations = {
     //Camera Screen
     savePhoto: 'Save Photo',
     retakePhoto: 'Retake Photo',
+
   },
   TL: {
     // Login Screen
@@ -126,7 +131,11 @@ export const translations = {
     history: 'Kasaysayan',
     ratings: 'Rating',
     about: 'Tungkol',
-    logout: 'Logout',
+    logout: 'Mag-logout',
+    logoutConfirmation: 'Pag-logout',
+    logoutMessage: 'Sigurado ka bang gusto mong mag-logout?',
+    logoutYes: 'Oo',
+    logoutNo: 'Hindi',
 
     // About Screen
     aboutTitle: 'Tungkol',

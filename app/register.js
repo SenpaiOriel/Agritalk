@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Alert,
   Image,
-  ImageBackground
+  ImageBackground,
+  Modal
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,17 +27,28 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
+    setError(""); // Clear error when user types
   };
 
   const handleRegister = () => {
     if (!form.email || !form.password || !form.confirmPassword) {
-      Alert.alert("Error", t.allFieldsRequired);
+      setError(t.allFieldsRequired);
       return;
     }
-    Alert.alert("Success", t.registrationSuccess);
+    if (form.password !== form.confirmPassword) {
+      setError(t.passwordsDontMatch);
+      return;
+    }
+    setShowSuccess(true);
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
     router.replace("/login");
   };
 
@@ -48,8 +60,34 @@ const Register = () => {
         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
 
+      {/* Success Modal */}
+      <Modal
+        visible={showSuccess}
+        transparent={true}
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.successContainer}>
+            <Ionicons name="checkmark-circle" size={60} color="#d4af37" style={styles.successIcon} />
+            <Text style={styles.successTitle}>{t.registrationSuccess}</Text>
+            <TouchableOpacity 
+              style={styles.successButton}
+              onPress={handleSuccessClose}
+            >
+              <Text style={styles.successButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       {/* Form */}
       <View style={styles.formContainer}>
+        {error ? (
+          <View style={styles.alertContainer}>
+            <Ionicons name="alert-circle" size={20} color="#fff" style={styles.alertIcon} />
+            <Text style={styles.alertText}>{error}</Text>
+          </View>
+        ) : null}
 
         <View style={styles.inputContainer}>
           <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
@@ -183,5 +221,62 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  alertContainer: {
+    backgroundColor: '#ff4444',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  alertIcon: {
+    marginRight: 8,
+  },
+  alertText: {
+    color: '#fff',
+    fontSize: 14,
+    flex: 1,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  successIcon: {
+    marginBottom: 20,
+  },
+  successTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  successButton: {
+    backgroundColor: '#d4af37',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  successButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

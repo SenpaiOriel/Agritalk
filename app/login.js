@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useLanguage } from './context/LanguageContext';
@@ -7,7 +7,7 @@ import { translations } from './translations/translations';
 
 const Login = () => {
   const router = useRouter();
-  const { language } = useLanguage();
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
   const [form, setForm] = useState({
     identifier: '',
@@ -15,6 +15,7 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
@@ -47,7 +48,13 @@ const Login = () => {
     }
 
     setErrorMessage('');
-    router.push('/dashboard');
+    setIsLoading(true);
+    
+    // Simulate server request
+    setTimeout(() => {
+      setIsLoading(false);
+      router.push('/dashboard');
+    }, 2000);
   };
 
   return (
@@ -56,7 +63,12 @@ const Login = () => {
         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
       <View style={styles.formContainer}>
-        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+        {errorMessage ? (
+          <View style={styles.alertContainer}>
+            <Ionicons name="alert-circle" size={20} color="#fff" style={styles.alertIcon} />
+            <Text style={styles.alertText}>{errorMessage}</Text>
+          </View>
+        ) : null}
         <View style={styles.inputContainer}>
           <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
           <TextInput
@@ -82,8 +94,16 @@ const Login = () => {
         <TouchableOpacity onPress={() => router.push('/forgot-password')}>
           <Text style={styles.forgotPassword}>{t.forgotPassword}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>{t.login}</Text>
+        <TouchableOpacity 
+          style={[styles.button, isLoading && styles.buttonDisabled]} 
+          onPress={handleLogin}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" size="small" />
+          ) : (
+            <Text style={styles.buttonText}>{t.login}</Text>
+          )}
         </TouchableOpacity>
         <Text style={styles.registerText}>{t.noAccount} <Text style={styles.registerLink} onPress={() => router.push('/register')}>{t.register}</Text></Text>
       </View>
@@ -178,6 +198,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 10,
     textAlign: 'center',
+  },
+  alertContainer: {
+    backgroundColor: '#ff4444',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  alertIcon: {
+    marginRight: 8,
+  },
+  alertText: {
+    color: '#fff',
+    fontSize: 14,
+    flex: 1,
+  },
+  buttonDisabled: {
+    opacity: 0.7,
   },
 });
 
