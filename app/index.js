@@ -62,7 +62,7 @@ const LoadingScreen = () => {
       <View style={styles.overlay} />
       
       <View style={styles.content}>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
+        <Image source={require('../assets/logon.png')} style={styles.logo} />
         <View style={styles.loadingContainer}>
           <Animated.View style={[styles.dot, { opacity: dot1Anim }]} />
           <Animated.View style={[styles.dot, { opacity: dot2Anim }]} />
@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
     position: 'absolute', // Ensures content is above overlay
   },
   logo: {
-    width: 115,
-    height: 100,
+    width: 70,
+    height: 80,
     marginBottom: 10,
   },
   loadingContainer: {

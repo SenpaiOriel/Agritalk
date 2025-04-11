@@ -66,7 +66,7 @@ const Login = () => {
       resizeMode="cover"
     >
       <View style={styles.logoContainer}>
-        <Image source={require('../assets/logon.png')} style={styles.logo} />
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
 
       <View style={styles.formContainer}>
