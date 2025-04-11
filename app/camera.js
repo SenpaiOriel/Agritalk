@@ -4,8 +4,6 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, Alert, Dimensions } fr
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as MediaLibrary from 'expo-media-library';
-import { useLanguage } from './context/LanguageContext';
-import { translations } from './translations/translations';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -18,8 +16,6 @@ export default function App() {
   const [photoUri, setPhotoUri] = useState(null);
   const cameraRef = useRef(null);
   const router = useRouter();
-  const { language, toggleLanguage } = useLanguage();
-  const t = translations[language];
   const translateY = useSharedValue(0);
   const context = useSharedValue({ y: 0 });
 
@@ -52,9 +48,9 @@ export default function App() {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>{t.fillAllFields}</Text>
+        <Text style={styles.message}>Camera permission is required to continue.</Text>
         <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.buttonText}>{t.continue}</Text>
+          <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       </View>
     );
@@ -64,13 +60,10 @@ export default function App() {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync();
-        console.log('Photo captured:', photo.uri);
         setPhotoUri(photo.uri);
-        // Show bottom sheet with spring animation
         translateY.value = withSpring(-SCREEN_HEIGHT / 2, { damping: 50 });
       } catch (error) {
-        console.error('Failed to capture photo:', error);
-        Alert.alert('Error', t.fillAllFields);
+        Alert.alert('Error', 'Failed to capture photo.');
       }
     }
   }
@@ -78,16 +71,15 @@ export default function App() {
   async function savePhotoToGallery(uri) {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Required', t.fillAllFields);
+      Alert.alert('Permission Required', 'Storage permission is required to save photos.');
       return;
     }
 
     try {
       await MediaLibrary.saveToLibraryAsync(uri);
-      Alert.alert('Success', t.fillAllFields);
+      Alert.alert('Success', 'Photo saved to gallery.');
     } catch (error) {
-      console.error('Failed to save photo:', error);
-      Alert.alert('Error', t.fillAllFields);
+      Alert.alert('Error', 'Failed to save photo.');
     }
   }
 
@@ -95,28 +87,39 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         {photoUri ? (
-          // Photo preview screen with bottom sheet
           <View style={styles.previewContainer}>
             <Image source={{ uri: photoUri }} style={styles.previewImage} />
-            
+
+            {/* Bottom Sheet */}
             <GestureDetector gesture={gesture}>
               <Animated.View style={[styles.bottomSheet, bottomSheetStyle]}>
                 <View style={styles.line} />
                 <View style={styles.predictionContent}>
                   <Text style={styles.predictionTitle}>Crop Predictions</Text>
+                  {/* Add actual prediction output here if needed */}
                 </View>
               </Animated.View>
             </GestureDetector>
 
-            <TouchableOpacity style={styles.retakeButton} onPress={() => {
-              setPhotoUri(null);
-              translateY.value = withSpring(0, { damping: 50 });
-            }}>
-              <Text style={styles.buttonText}>{t.retakePhoto}</Text>
+            {/* Buttons */}
+            <TouchableOpacity
+              style={styles.getPredictionButton}
+              onPress={() => translateY.value = withSpring(-SCREEN_HEIGHT / 2, { damping: 50 })}
+            >
+              <Text style={styles.buttonText}>Get Prediction</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.retakeButton}
+              onPress={() => {
+                setPhotoUri(null);
+                translateY.value = withSpring(0, { damping: 50 });
+              }}
+            >
+              <Text style={styles.buttonText}>Retake Photo</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          // Camera view
           <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/dashboard')}>
               <Ionicons name="arrow-back" size={24} color="white" />
@@ -177,20 +180,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#fff',
   },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-    marginTop: 20,
-  },
-  actionButton: {
-    flex: 1,
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginHorizontal: 5,
-  },
   permissionButton: {
     backgroundColor: '#007AFF',
     padding: 15,
@@ -229,13 +218,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  // predictionItem: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   paddingVertical: 15,
-  //   borderBottomWidth: 1,
-  //   borderBottomColor: '#eee',
-  // },
+  getPredictionButton: {
+    position: 'absolute',
+    bottom: 80,
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+    borderColor: '#000',
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  },
   retakeButton: {
     position: 'absolute',
     bottom: 20,

@@ -3,15 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet, Modal,ScrollView } from 'reac
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { useLanguage } from './context/LanguageContext';
-import { translations } from './translations/translations';
 
 const ScanHistoryScreen = () => {
   const [scanHistory, setScanHistory] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
-  const { language, toggleLanguage } = useLanguage();
-  const t = translations[language];
 
   const handleAddScan = (uri) => {
     setScanHistory((prevHistory) => [...prevHistory, uri]);
@@ -36,12 +32,12 @@ const ScanHistoryScreen = () => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t.history}</Text>
+        <Text style={styles.headerTitle}>Scan History</Text>
       </View>
 
       {/* Screen Content */}
       <View style={styles.content}>
-        <Text style={styles.infoText}>{t.noReviews}</Text>
+        <Text style={styles.infoText}>No scan history available.</Text>
       </View>
     </ScrollView>
   );
@@ -58,16 +54,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#C2A868',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingTop: 50,
+    paddingBottom: 10,
     paddingHorizontal: 20,
     // borderBottomLeftRadius: 20,
     // borderBottomRightRadius: 20,
   },
   backButton: {
-    padding: 5,
+    padding: 4,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
     marginLeft: 15,
@@ -77,6 +74,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    textAlign: 'center',
+    marginTop: '100%'
   },
   infoText: {
     fontSize: 18,

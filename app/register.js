@@ -5,20 +5,15 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   Image,
   ImageBackground,
   Modal
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from './context/LanguageContext';
-import { translations } from './translations/translations';
 
 const Register = () => {
   const router = useRouter();
-  const { language, toggleLanguage } = useLanguage();
-  const t = translations[language];
   const [form, setForm] = useState({
     fullname: "",
     email: "",
@@ -29,21 +24,49 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [termsChecked, setTermsChecked] = useState(false);
 
   const handleChange = (key, value) => {
     setForm({ ...form, [key]: value });
-    setError(""); // Clear error when user types
+    setError("");
+  };
+
+  const validateIdentifier = (identifier) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(identifier);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 8;
   };
 
   const handleRegister = () => {
-    if (!form.email || !form.password || !form.confirmPassword) {
-      setError(t.allFieldsRequired);
+    if (!form.fullname || !form.email || !form.password || !form.confirmPassword) {
+      setError("All fields are required");
       return;
     }
+
+    if (!validateIdentifier(form.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!validatePassword(form.password)) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
     if (form.password !== form.confirmPassword) {
-      setError(t.passwordsDontMatch);
+      setError("Passwords don't match");
       return;
     }
+
+    // Uncomment if you want to enforce terms acceptance
+    // if (!termsChecked) {
+    //   setError("You must agree to the terms");
+    //   return;
+    // }
+
     setShowSuccess(true);
   };
 
@@ -53,35 +76,15 @@ const Register = () => {
   };
 
   return (
-    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}> 
-      
-      {/* Logo */}
+    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}>
       <View style={styles.logoContainer}>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </View>
 
-      {/* Success Modal */}
-      <Modal
-        visible={showSuccess}
-        transparent={true}
-        animationType="fade"
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.successContainer}>
-            <Ionicons name="checkmark-circle" size={60} color="#d4af37" style={styles.successIcon} />
-            <Text style={styles.successTitle}>{t.registrationSuccess}</Text>
-            <TouchableOpacity 
-              style={styles.successButton}
-              onPress={handleSuccessClose}
-            >
-              <Text style={styles.successButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Form */}
       <View style={styles.formContainer}>
+        <Text style={styles.title}>Create Account</Text>
+        <Text style={styles.subtitle}>Join us to get started</Text>
+
         {error ? (
           <View style={styles.alertContainer}>
             <Ionicons name="alert-circle" size={20} color="#fff" style={styles.alertIcon} />
@@ -90,18 +93,18 @@ const Register = () => {
         ) : null}
 
         <View style={styles.inputContainer}>
-          <Ionicons name="person-outline" size={24} color="gray" style={styles.icon} />
+          <Ionicons name="person-outline" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
-            placeholder={t.fullname}
+            placeholder="Full Name"
             style={styles.input}
             onChangeText={(text) => handleChange("fullname", text)}
           />
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
+          <Ionicons name="mail-outline" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
-            placeholder={t.email}
+            placeholder="Email"
             style={styles.input}
             keyboardType="email-address"
             onChangeText={(text) => handleChange("email", text)}
@@ -109,40 +112,65 @@ const Register = () => {
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
+          <Ionicons name="lock-closed-outline" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
-            placeholder={t.password}
+            placeholder="Enter Password"
             style={styles.input}
             secureTextEntry={!showPassword}
             onChangeText={(text) => handleChange("password", text)}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="gray" />
+            <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} color="gray" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={24} color="gray" style={styles.icon} />
+          <Ionicons name="lock-closed-outline" size={20} color="gray" style={styles.inputIcon} />
           <TextInput
-            placeholder={t.confirmPassword}
+            placeholder="Confirm Password"
             style={styles.input}
             secureTextEntry={!showConfirmPassword}
             onChangeText={(text) => handleChange("confirmPassword", text)}
           />
           <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-            <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={24} color="gray" />
+            <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={20} color="gray" />
           </TouchableOpacity>
         </View>
 
+        {/* Uncomment if you want to include terms */}
+        {/* <View style={styles.checkboxContainer}>
+          <TouchableOpacity
+            style={[styles.checkbox, termsChecked && styles.checkedBox]}
+            onPress={() => setTermsChecked(!termsChecked)}
+          >
+            {termsChecked && <Ionicons name="checkmark" size={16} color="white" />}
+          </TouchableOpacity>
+          <Text style={styles.checkboxLabel}>I agree to the terms and conditions</Text>
+        </View> */}
+
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>{t.register}</Text>
+          <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/login")}>
-          <Text style={styles.link}>{t.noAccount} {t.login}</Text>
-        </TouchableOpacity>
-
+        <Text style={styles.bottomText}>
+          Already have an Account?{" "}
+          <Text style={styles.loginLink} onPress={() => router.push("/login")}>
+            Login
+          </Text>
+        </Text>
       </View>
+
+      <Modal visible={showSuccess} transparent={true} animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.successContainer}>
+            <Ionicons name="checkmark-circle" size={60} color="#d4af37" style={styles.successIcon} />
+            <Text style={styles.successTitle}>Registration Successful!</Text>
+            <TouchableOpacity style={styles.successButton} onPress={handleSuccessClose}>
+              <Text style={styles.successButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ImageBackground>
   );
 };
@@ -152,75 +180,84 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   logoContainer: {
-    position: "absolute",
-    top: 120,
-    alignItems: "center",
+    marginTop: 150,
+    alignItems: 'center',
   },
   logo: {
     width: 100,
     height: 100,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   formContainer: {
-    width: "100%",
-    backgroundColor: "#fff",
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#fff',
     padding: 25,
-    borderRadius: 30,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius:5
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'gray',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    width: "100%",
-    height: 53,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 20,
+    borderRadius: 30,
     paddingHorizontal: 15,
     marginBottom: 15,
     backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+  },
+  inputIcon: {
+    marginRight: 10,
   },
   input: {
     flex: 1,
+    height: 50,
     fontSize: 16,
-    paddingHorizontal: 10,
   },
   button: {
-  backgroundColor: "#d4af37", // Yellowish color
-  paddingVertical: 12,
-  paddingHorizontal: 40,  // Adjusted for a shorter width
-  borderRadius: 20,
-  alignItems: "center",
-  alignSelf: "center", // Centers the button
-  marginTop: 10,
-},
+    backgroundColor: "#d4af37",
+    paddingVertical: 15,
+    borderRadius: 30,
+    alignItems: "center",
+    marginBottom: 15,
+  },
   buttonText: {
     color: "#FFF",
     fontSize: 18,
     fontWeight: "bold",
   },
-  link: {
-    marginTop: 10,
-    color: "black",
-    textAlign: "center",
+  bottomText: {
+    color: '#555',
+    fontSize: 14,
+    textAlign: 'center',
   },
-  icon: {
-    marginRight: 10,
+  loginLink: {
+    color: '#d4af37',
+    fontWeight: 'bold',
+    fontSize: 15
   },
   alertContainer: {
     backgroundColor: '#ff4444',
@@ -250,11 +287,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: 'center',
     width: '80%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   successIcon: {
     marginBottom: 20,

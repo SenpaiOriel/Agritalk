@@ -3,13 +3,9 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Linking } from 'r
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import { useLanguage } from './context/LanguageContext';
-import { translations } from './translations/translations';
 
 const AboutScreen = () => {
   const router = useRouter();
-  const { language, toggleLanguage } = useLanguage();
-  const t = translations[language];
 
   const handlePress = (url) => {
     Linking.openURL(url).catch((err) => console.error('Failed to open URL:', err));
@@ -22,28 +18,28 @@ const AboutScreen = () => {
         <TouchableOpacity onPress={() => router.replace('/dashboard')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t.aboutTitle}</Text>
+        <Text style={styles.headerTitle}>About</Text>
       </View>
 
       {/* Content */}
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>CropMD</Text>
         <Text style={styles.paragraph}>
-          {t.welcome}
+          Welcome to CropMD, the app designed to help you protect your crops and grow with confidence!
         </Text>
         <Text style={styles.paragraph}>
-          {t.easyToUse}
+          With our easy-to-use interface, you can capture images of your crops to learn about common diseases and receive guidance on proper crop care.
         </Text>
         <Text style={styles.paragraph}>
-          {t.mission}
+          Our mission is to empower farmers with modern tools and reliable insights to ensure a bountiful harvest every season.
         </Text>
         <Text style={styles.paragraph}>
-          {t.support}
+          For support, suggestions, or feedback, please reach out to our team. We are constantly working to improve your experience.
         </Text>
 
         {/* Contact Section */}
         <View style={styles.contactSection}>
-          <Text style={styles.contactTitle}>{t.contactUs}</Text>
+          <Text style={styles.contactTitle}>Contact Us</Text>
           <TouchableOpacity
             style={styles.contactItem}
             onPress={() => handlePress('mailto:CropMD@gmail.com')}
@@ -79,11 +75,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
  header: {
-    backgroundColor: '#C2A868',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+  backgroundColor: '#C2A868',
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingTop: 50,
+  paddingBottom: 10,
+  paddingHorizontal: 20,
     // borderBottomLeftRadius: 20,
     // borderBottomRightRadius: 20,
   },
@@ -91,7 +88,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'left',
@@ -104,19 +101,20 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 15,
     textAlign: 'center',
-    fontFamily: 'OpenSans'
+    fontFamily: 'OpenSans',
   },
   paragraph: {
     fontSize: 16,
     color: '#555',
     marginBottom: 15,
-    lineHeight: 24,
-    fontFamily: 'OpenSans'
+    lineHeight: 22,
+    fontFamily: 'OpenSans',
+    textAlign: 'center',
   },
   contactSection: {
     marginTop: 30,

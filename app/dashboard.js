@@ -1,55 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Image, 
+import React, { useState, useRef } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
   ScrollView,
   Modal,
-  Animated,
-  Alert,
-  BackHandler
-} from "react-native";
+  Animated} from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useLanguage } from './context/LanguageContext';
-import { translations } from './translations/translations';
 
 const HomeScreen = () => {
   const router = useRouter();
-  const { language, toggleLanguage } = useLanguage();
-  const t = translations[language];
-  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
-  const [fadeAnim] = useState(new Animated.Value(0));
-  const [selectedLang, setSelectedLang] = useState(language);
+  const [selectedLang, setSelectedLang] = useState("EN");
+  const [currentLanguage, setCurrentLanguage] = useState("EN");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      return true; // Prevent going back
-    });
-
-    return () => backHandler.remove();
-  }, []);
-
-  const handleLogout = () => {
-    setShowLogoutModal(true);
-  };
-
-  const handleLogoutConfirm = () => {
-    setShowLogoutModal(false);
-    router.replace("/login");
-  };
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const toggleLanguageMenu = () => {
-    setShowLanguageMenu(!showLanguageMenu);
-    setSelectedLang(language);
-    Animated.timing(fadeAnim, {
-      toValue: showLanguageMenu ? 0 : 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
+    if (showLanguageMenu) {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => setShowLanguageMenu(false));
+    } else {
+      setShowLanguageMenu(true);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
   };
 
   const handleLanguageSelect = (lang) => {
@@ -57,9 +41,7 @@ const HomeScreen = () => {
   };
 
   const handleSelectPress = () => {
-    if (selectedLang !== language) {
-      toggleLanguage();
-    }
+    setCurrentLanguage(selectedLang);
     toggleLanguageMenu();
   };
 
@@ -67,90 +49,191 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
-        <View style={styles.header}>
-          {/* Language Toggle (Top Right) */}
-          <TouchableOpacity 
-            style={styles.languageToggle} 
-            onPress={toggleLanguageMenu}
-          >
-            <MaterialIcons 
-              name="g-translate" 
-              size={24} 
-              color="#FFF" 
-            />
-            <Text style={styles.languageText}>
-              {language === "EN" ? "EN" : "TL"}
-            </Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.languageToggle}
+          onPress={toggleLanguageMenu}
+        >
+          <MaterialIcons name="g-translate" size={24} color="#FFF" />
+        </TouchableOpacity>
 
-          <View style={styles.headerContent}>
-            {/* Logo */}
-            <Image source={require("../assets/logo.png")} style={styles.logo} />
-
-            {/* Title (Below Logo) */}
-            <Text style={styles.headerTitle}>
-              {t.guardCrops}
-            </Text>
-            <Text style={styles.headerTitle}>
-              {t.growConfidence}
-            </Text>
-          </View>
+        <View style={styles.headerContent}>
+          <Image source={require("../assets/logo.png")} style={styles.logo} />
+          <Text style={styles.headerTitle}>
+            {currentLanguage === "EN"
+              ? "Guard Your Crops,"
+              : "Bantayan ang Iyong Pananim,"}
+          </Text>
+          <Text style={styles.headerTitle}>
+            {currentLanguage === "EN"
+              ? "Grow with Confidence!"
+              : " Lumago nang May Kumpiyansa!"}
+          </Text>
         </View>
 
-        {/* Content */}
-        <View style={styles.content}>
-          {/* Corn Card */}
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push({ pathname: "/camera", params: { crop: "Corn" } })}
-          >
-            <View style={styles.cardContent}>
-              <Image source={require("../assets/mais.webp")} style={styles.cardLogo} />
-              <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>{t.corn}</Text>
-                <Text style={styles.cardSubtitle}>
-                  {t.captureLeaf}
-                </Text>
+        <View style={styles.header}>
+          <View style={styles.content}>
+            {/* Corn Card */}
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() =>
+                router.push({ pathname: "/camera", params: { crop: "Corn" } })
+              }
+            >
+              <View style={styles.cardContent}>
+                <Image
+                  source={require("../assets/mais.jpg")}
+                  style={styles.cardLogo}
+                />
+                <View style={styles.cardRight}>
+                  <Text style={styles.cardTitle}>
+                    {currentLanguage === "EN" ? "Corn" : "Mais"}
+                  </Text>
+                  <Text style={styles.cardSubtitle}>
+                    {currentLanguage === "EN"
+                      ? "Capture image of a leaf to know more about your crop's condition"
+                      : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
 
-          {/* Rice Card */}
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push({ pathname: "/camera", params: { crop: "Rice" } })}
-          >
-            <View style={styles.cardContent}>
-              <Image source={require("../assets/palay.jpg")} style={styles.cardLogo} />
-              <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>{t.rice}</Text>
-                <Text style={styles.cardSubtitle}>
-                  {t.captureLeaf}
-                </Text>
+            {/* Rice Card */}
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() =>
+                router.push({ pathname: "/camera", params: { crop: "Rice" } })
+              }
+            >
+              <View style={styles.cardContent}>
+                <Image
+                  source={require("../assets/palay.jpg")}
+                  style={styles.cardLogo}
+                />
+                <View style={styles.cardRight}>
+                  <Text style={styles.cardTitle}>
+                    {currentLanguage === "EN" ? "Rice" : "Palay"}
+                  </Text>
+                  <Text style={styles.cardSubtitle}>
+                    {currentLanguage === "EN"
+                      ? "Capture image of a leaf to know more about your crop's condition"
+                      : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
 
-          {/* Tomato Card */}
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => router.push({ pathname: "/camera", params: { crop: "Tomato" } })}
-          >
-            <View style={styles.cardContent}>
-              <Image source={require("../assets/kamatis.webp")} style={styles.cardLogo} />
-              <View style={styles.cardRight}>
-                <Text style={styles.cardTitle}>{t.tomato}</Text>
-                <Text style={styles.cardSubtitle}>
-                  {t.captureLeaf}
-                </Text>
+            {/* Tomato Card */}
+            <TouchableOpacity
+              style={styles.card}
+              onPress={() =>
+                router.push({ pathname: "/camera", params: { crop: "Tomato" } })
+              }
+            >
+              <View style={styles.cardContent}>
+                <Image
+                  source={require("../assets/kamatis.jpg")}
+                  style={styles.cardLogo}
+                />
+                <View style={styles.cardRight}>
+                  <Text style={styles.cardTitle}>
+                    {currentLanguage === "EN" ? "Tomato" : "Kamatis"}
+                  </Text>
+                  <Text style={styles.cardSubtitle}>
+                    {currentLanguage === "EN"
+                      ? "Capture image of a leaf to know more about your crop's condition"
+                      : "Kuhanan ng larawan ang dahon upang malaman ang kalagayan ng iyong pananim"}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
 
-      {/* Language Selection Modal */}
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          onPress={() => router.push("/history")}
+          style={styles.navItem}
+        >
+          <Ionicons name="time" size={24} color="#808080" />
+          <Text style={styles.navText}>
+            {currentLanguage === "EN" ? "History" : "Kasaysayan"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => router.push("/review")}
+          style={styles.navItem}
+        >
+          <Ionicons name="star" size={24} color="#808080" />
+          <Text style={styles.navText}>
+            {currentLanguage === "EN" ? "Ratings" : "Rating"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => router.push("/about")}
+          style={styles.navItem}
+        >
+          <Ionicons name="information-circle" size={24} color="#808080" />
+          <Text style={styles.navText}>
+            {currentLanguage === "EN" ? "About" : "Tungkol"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setShowLogoutModal(true)}
+          style={styles.navItem}
+        >
+          <Ionicons name="log-out" size={24} color="#808080" />
+          <Text style={styles.navText}>
+            {currentLanguage === "EN" ? "Logout" : "Logout"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Logout Modal */}
       <Modal
+        transparent={true}
+        animationType="fade"
+        visible={showLogoutModal}
+        onRequestClose={() => setShowLogoutModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.logoutContainer}>
+            <Text style={styles.logoutTitle}>
+              {currentLanguage === "EN"
+                ? "Are you sure you want to logout?"
+                : "Sigurado ka bang gusto mong mag-logout?"}
+            </Text>
+            <View style={styles.logoutButtonsContainer}>
+              <TouchableOpacity
+                style={[styles.logoutButton, { backgroundColor: "#d4af37" }]}
+                onPress={() => {
+                  setShowLogoutModal(false);
+                  router.replace("/login");
+                }}
+              >
+                <Text style={styles.logoutButtonText}>
+                  {currentLanguage === "EN" ? "Yes" : "Oo"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.logoutButton, { backgroundColor: "#ccc" }]}
+                onPress={() => setShowLogoutModal(false)}
+              >
+                <Text style={styles.logoutButtonText}>
+                  {/* {currentLanguage === "EN" ? "No" : "Hindi"} */}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Language Selection Modal */}
+       <Modal
         visible={showLanguageMenu}
         transparent={true}
         animationType="fade"
@@ -212,60 +295,6 @@ const HomeScreen = () => {
           </Animated.View>
         </TouchableOpacity>
       </Modal>
-
-      {/* Bottom Navigation Bar */}
-      <View style={styles.bottomNav}>
-        <TouchableOpacity onPress={() => router.push("/history")} style={styles.navItem}>
-          <Ionicons name="time" size={24} color="black" />
-          <Text style={styles.navText}>{t.history}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push("/review")} style={styles.navItem}>
-          <Ionicons name="star" size={24} color="black" />
-          <Text style={styles.navText}>{t.ratings}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => router.push("/about")} style={styles.navItem}>
-          <Ionicons name="information-circle" size={24} color="black" />
-          <Text style={styles.navText}>{t.about}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={handleLogout} style={styles.navItem}>
-          <Ionicons name="log-out" size={24} color="black" />
-          <Text style={styles.navText}>{t.logout}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Logout Confirmation Modal */}
-      <Modal
-        visible={showLogoutModal}
-        transparent={true}
-        animationType="fade"
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.logoutContainer}>
-            <Ionicons name="log-out" size={60} color="red" style={styles.logoutIcon} />
-            <Text style={styles.logoutTitle}>Logout Confirmation</Text>
-            <Text style={styles.logoutMessage}>Are you sure you want to logout?</Text>
-            
-            <View style={styles.logoutButtonsContainer}>
-              <TouchableOpacity 
-                style={[styles.logoutButton, styles.cancelButton]}
-                onPress={() => setShowLogoutModal(false)}
-              >
-                <Text style={styles.logoutButtonText}>No</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.logoutButton, styles.confirmButton]}
-                onPress={handleLogoutConfirm}
-              >
-                <Text style={styles.logoutButtonText}>Yes</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -275,30 +304,110 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F7F7",
+    backgroundColor: "#C2A868",
+    paddingTop: 20,
+  },
+  scrollContent: {
+    paddingBottom: 80,
   },
   header: {
-    backgroundColor: "#C2A868",
-    paddingBottom: 40,
-    paddingHorizontal: 20,
-    paddingTop: 10, 
-    borderBottomLeftRadius:30,
-    borderBottomRightRadius:30
+    backgroundColor: "#ffffff",
+    height: "200%",
+    width: "100%",
+    marginTop: "10%",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  headerContent: {
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   languageToggle: {
     position: "absolute",
-    top: 15,
-    right: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    padding: 8,
-    borderRadius: 20,
+    right: 25,
   },
-  languageText: {
-    color: '#FFF',
-    marginLeft: 5,
-    fontWeight: 'bold',
+  logo: {
+    width: 50,
+    height: 60,
+    resizeMode: "contain",
+    marginBottom: 10,
+    marginLeft: 25,
+  },
+  headerTitle: {
+    fontSize: 20,
+    color: "#ffffff",
+    fontWeight: "800",
+    textAlign: "left",
+    marginLeft: 35,
+    maxWidth: "90%",
+    fontFamily: "OpenSans",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  content: {
+    alignItems: "center",
+    marginTop: -10,
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    height: 120,
+    width: "90%",
+    borderRadius: 35,
+    marginBottom: 15,
+    padding: 20,
+    elevation: 5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  cardContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  cardRight: {
+    flex: 1,
+    marginLeft: 15,
+  },
+  cardLogo: {
+    width: 75,
+    height: 75,
+    borderRadius: 60,
+    borderColor: "#86E2AE",
+    borderWidth: 2,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#000",
+    fontFamily: "OpenSans",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowRadius: 1,
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 5,
+    fontFamily: "OpenSans",
+  },
+  bottomNav: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#FFF",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#DDD",
+  },
+  navItem: {
+    alignItems: "center",
+  },
+  navText: {
+    fontSize: 12,
+    marginTop: 3,
   },
   modalOverlay: {
     flex: 1,
@@ -374,77 +483,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
   },
-  logo: {
-    width: 60,
-    height: 70,
-    resizeMode: "contain",
-    marginBottom: 5,
-  },
-  headerTitle: {
-    fontSize: 16,
-    color: "#FFF",
-    fontWeight: "600",
-    textAlign: "left",
-    maxWidth: "90%",
-  },
-  scrollContent: {
-    paddingBottom: 80,
-  },
-  content: {
-    alignItems: "center",
-    marginTop: -10,
-  },
-  card: {
-    backgroundColor: "#FFFFFF",
-    width: "90%",
-    borderRadius: 15,
-    marginBottom: 15,
-    padding: 20,
-    elevation: 5,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  cardContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  cardRight: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  cardLogo: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
-  },
-  cardSubtitle: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 5,
-  },
-  bottomNav: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#FFF",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 10,
-  },
-  navItem: {
-    alignItems: "center",
-  },
-  navText: {
-    fontSize: 12,
-    marginTop: 3,
-  },
   logoutContainer: {
     backgroundColor: 'white',
     padding: 20,
@@ -496,4 +534,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  
+
 });

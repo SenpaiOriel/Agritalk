@@ -16,19 +16,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLanguage } from './context/LanguageContext';
-import { translations } from './translations/translations';
 
 const FeedbackScreen = () => {
-  const router = useRouter();
-  const { language } = useLanguage();
-  const t = translations[language];
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [selectedReview, setSelectedReview] = useState(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [actionsModalVisible, setActionsModalVisible] = useState(false);
+  const [selectedReviewForActions, setSelectedReviewForActions] = useState(null);
   const inputRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     loadReviews();
@@ -84,46 +85,24 @@ const FeedbackScreen = () => {
   };
 
   const handleDeleteReview = (id) => {
-    Alert.alert(
-      '🗑️ Tanggalin ang Review',
-      'Hindi na maaaring ibalik ang aksyong ito.',
-      [
-        { 
-          text: '↩️ Panatilihin',
-          style: 'cancel',
-        },
-        {
-          text: '🗑️ Tanggalin',
-          onPress: () => {
-            const updatedReviews = reviews.filter((review) => review.id !== id);
-            setReviews(updatedReviews);
-            saveReviews(updatedReviews);
-            Alert.alert(
-              '✅ Tagumpay',
-              'Na-tanggal ang review',
-              [{ text: 'OK' }],
-              { 
-                cancelable: true,
-                titleStyle: { fontFamily: 'OpenSans-Bold' },
-                messageStyle: { fontFamily: 'OpenSans' }
-              }
-            );
-          },
-          style: 'destructive',
-        },
-      ],
-      { 
-        cancelable: true,
-        titleStyle: { fontFamily: 'OpenSans-Bold' },
-        messageStyle: { fontFamily: 'OpenSans' }
-      }
-    );
+    setReviewToDelete(id);
+    setDeleteModalVisible(true);
+  };
+
+  const confirmDelete = () => {
+    const updatedReviews = reviews.filter((review) => review.id !== reviewToDelete);
+    setReviews(updatedReviews);
+    saveReviews(updatedReviews);
+    setDeleteModalVisible(false);
+    setReviewToDelete(null);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   };
 
   const handleEditReview = (review) => {
     setSelectedReview(review);
     setRating(review.rating);
     setFeedback(review.feedback);
+    setEditModalVisible(true);
   };
 
   const handleUpdateReview = () => {
@@ -138,18 +117,15 @@ const FeedbackScreen = () => {
       setSelectedReview(null);
       setRating(0);
       setFeedback('');
+      setEditModalVisible(false);
       Keyboard.dismiss();
-      Alert.alert(
-        '✅ Success',
-        'Review updated',
-        [{ text: 'OK' }],
-        { 
-          cancelable: true,
-          titleStyle: { fontFamily: 'OpenSans-Bold' },
-          messageStyle: { fontFamily: 'OpenSans' }
-        }
-      );
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
+  };
+
+  const handleReviewActions = (review) => {
+    setSelectedReviewForActions(review);
+    setActionsModalVisible(true);
   };
 
   const renderReview = ({ item }) => (
@@ -169,41 +145,16 @@ const FeedbackScreen = () => {
 
         {/* Three Dots Menu */}
         <TouchableOpacity
-          onPress={() =>
-            Alert.alert(
-              '✏️ Mga Aksyon sa Review',
-              'Pumili ng aksyon:',
-              [
-                {
-                  text: '📝 I-edit',
-                  onPress: () => handleEditReview(item),
-                  style: 'default',
-                },
-                {
-                  text: '🗑️ Tanggalin',
-                  onPress: () => handleDeleteReview(item.id),
-                  style: 'destructive',
-                },
-                {
-                  text: '❌ Kanselahin',
-                  style: 'cancel',
-                },
-              ],
-              { 
-                cancelable: true,
-                titleStyle: { fontFamily: 'OpenSans-Bold' },
-                messageStyle: { fontFamily: 'OpenSans' }
-              }
-            )
-          }
+          onPress={() => handleReviewActions(item)}
+          style={styles.actionsButton}
         >
-          <Ionicons name="ellipsis-vertical" size={20} color="#888" />
+          <Ionicons name="ellipsis-vertical" size={24} color="#888" />
         </TouchableOpacity>
       </View>
 
       {/* Feedback Text */}
       <Text style={styles.reviewText}>
-        {item.feedback || t.noComment}
+        {item.feedback || 'No comment provided.'}
       </Text>
     </View>
   );
@@ -215,7 +166,7 @@ const FeedbackScreen = () => {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={30} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t.feedback}</Text>
+        <Text style={styles.headerTitle}>Feedback</Text>
       </View>
 
       <ScrollView 
@@ -224,9 +175,9 @@ const FeedbackScreen = () => {
       >
         {/* Feedback Card */}
         <View style={styles.card}>
-          <Image source={require('../assets/logo.png')} style={[styles.icon, { width: 100, height: 77, alignSelf: 'center', marginBottom: 10, opacity: 1 }]} />
-          <Text style={styles.title}>{t.experience}</Text>
-          <Text style={styles.subtitle}>{t.feedbackHelp}</Text>
+          <Image source={require('../assets/logo1.png')} style={[styles.icon, { width: 70, height: 54,  alignSelf: 'center', marginBottom: 10 }]} />
+          <Text style={styles.title}>How's your experience?</Text>
+          <Text style={styles.subtitle}>Your feedback helps us improve our service</Text>
           <View style={styles.starsContainer}>
             {[1, 2, 3, 4, 5].map((star) => (
               <TouchableOpacity 
@@ -243,17 +194,17 @@ const FeedbackScreen = () => {
             ))}
           </View>
           <Text style={styles.ratingText}>
-            {rating === 0 ? t.tapToRate :
-             rating === 1 ? t.poor :
-             rating === 2 ? t.fair :
-             rating === 3 ? t.good :
-             rating === 4 ? t.veryGood : t.excellent}
+            {rating === 0 ? 'Tap a star to rate' :
+             rating === 1 ? 'Poor' :
+             rating === 2 ? 'Fair' :
+             rating === 3 ? 'Good' :
+             rating === 4 ? 'Very Good' : 'Excellent'}
           </Text>
-          <Text style={styles.feedbackLabel}>{t.shareThoughts}</Text>
+          <Text style={styles.feedbackLabel}>Share your thoughts (optional):</Text>
           <TextInput
             ref={inputRef}
             style={styles.input}
-            placeholder={t.tellUs}
+            placeholder="Tell us what you think..."
             value={feedback}
             onChangeText={setFeedback}
             multiline
@@ -265,15 +216,15 @@ const FeedbackScreen = () => {
             disabled={rating === 0}
           >
             <Text style={styles.submitText}>
-              {selectedReview ? t.updateReview : t.submitReview}
+              {selectedReview ? 'Update Review' : 'Submit Review'}
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Reviews Header */}
         <View style={styles.reviewsHeader}>
-          <Text style={styles.reviewsTitle}>{t.communityReviews}</Text>
-          <Text style={styles.reviewsSubtitle}>{t.seeOthers}</Text>
+          <Text style={styles.reviewsTitle}>Community Reviews</Text>
+          <Text style={styles.reviewsSubtitle}>See what others are saying</Text>
         </View>
 
         {/* List of Reviews */}
@@ -287,8 +238,8 @@ const FeedbackScreen = () => {
             ListEmptyComponent={
               <View style={styles.emptyReviews}>
                 <Ionicons name="chatbubble-outline" size={50} color="#CCC" />
-                <Text style={styles.emptyReviewsText}>{t.noReviews}</Text>
-                <Text style={styles.emptyReviewsSubtext}>{t.beFirst}</Text>
+                <Text style={styles.emptyReviewsText}>No reviews yet</Text>
+                <Text style={styles.emptyReviewsSubtext}>Be the first to share your thoughts!</Text>
               </View>
             }
           />
@@ -302,13 +253,177 @@ const FeedbackScreen = () => {
             <View style={styles.modalIconContainer}>
               <Ionicons name="checkmark-circle" size={60} color="#4CAF50" />
             </View>
-            <Text style={styles.modalTitle}>{t.thankYou}</Text>
-            <Text style={styles.modalText}>{t.feedbackHelps}</Text>
+            <Text style={styles.modalTitle}>Thank You!</Text>
+            <Text style={styles.modalText}>Your feedback helps us serve you better.</Text>
             <TouchableOpacity style={styles.okButton} onPress={closeModal}>
-              <Text style={styles.okText}>{t.continue}</Text>
+              <Text style={styles.okText}>Continue</Text>
             </TouchableOpacity>
           </View>
         </View>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={deleteModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalIconContainer}>
+              <Ionicons name="trash-bin" size={60} color="#FF4444" />
+            </View>
+            <Text style={styles.modalTitle}>Delete Review</Text>
+            <Text style={styles.modalText}>Are you sure you want to delete this review? This action cannot be undone.</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setDeleteModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.deleteButton]}
+                onPress={confirmDelete}
+              >
+                <Text style={styles.modalButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Edit Review Modal */}
+      <Modal
+        visible={editModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalIconContainer}>
+              <Ionicons name="create" size={60} color="#C2A868" />
+            </View>
+            <Text style={styles.modalTitle}>Edit Review</Text>
+            <View style={styles.starsContainer}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <TouchableOpacity 
+                  key={star} 
+                  onPress={() => handleStarPress(star)}
+                  style={styles.starButton}
+                >
+                  <Ionicons
+                    name={star <= rating ? 'star' : 'star-outline'}
+                    size={45}
+                    color={star <= rating ? '#FFD700' : '#CCC'}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <Text style={styles.ratingText}>
+              {rating === 0 ? 'Tap a star to rate' :
+               rating === 1 ? 'Poor' :
+               rating === 2 ? 'Fair' :
+               rating === 3 ? 'Good' :
+               rating === 4 ? 'Very Good' : 'Excellent'}
+            </Text>
+            <TextInput
+              ref={inputRef}
+              style={styles.input}
+              placeholder="Tell us what you think..."
+              value={feedback}
+              onChangeText={setFeedback}
+              multiline
+              placeholderTextColor="#999"
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => {
+                  setEditModalVisible(false);
+                  setSelectedReview(null);
+                  setRating(0);
+                  setFeedback('');
+                }}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.updateButton]}
+                onPress={handleUpdateReview}
+                disabled={rating === 0}
+              >
+                <Text style={styles.modalButtonText}>Update</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Review Actions Modal */}
+      <Modal
+        visible={actionsModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setActionsModalVisible(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={() => setActionsModalVisible(false)}
+        >
+          <View style={styles.actionsModalContent}>
+            <View style={styles.actionsHeader}>
+              <Text style={styles.actionsTitle}>Review Actions</Text>
+              <TouchableOpacity 
+                onPress={() => setActionsModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close" size={24} color="#666" />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.actionsList}>
+              <TouchableOpacity 
+                style={styles.actionItem}
+                onPress={() => {
+                  setActionsModalVisible(false);
+                  handleEditReview(selectedReviewForActions);
+                }}
+              >
+                <View style={[styles.actionIconContainer, { backgroundColor: 'rgba(194, 168, 104, 0.1)' }]}>
+                  <Ionicons name="create" size={24} color="#C2A868" />
+                </View>
+                <View style={styles.actionTextContainer}>
+                  <Text style={styles.actionTitle}>Edit Review</Text>
+                  <Text style={styles.actionSubtitle}>Modify your rating and feedback</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#CCC" />
+              </TouchableOpacity>
+
+              <View style={styles.actionDivider} />
+
+              <TouchableOpacity 
+                style={styles.actionItem}
+                onPress={() => {
+                  setActionsModalVisible(false);
+                  handleDeleteReview(selectedReviewForActions.id);
+                }}
+              >
+                <View style={[styles.actionIconContainer, { backgroundColor: 'rgba(255, 68, 68, 0.1)' }]}>
+                  <Ionicons name="trash-bin" size={24} color="#FF4444" />
+                </View>
+                <View style={styles.actionTextContainer}>
+                  <Text style={[styles.actionTitle, { color: '#FF4444' }]}>Delete Review</Text>
+                  <Text style={styles.actionSubtitle}>Remove this review permanently</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#CCC" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -323,31 +438,27 @@ const styles = StyleSheet.create({
     paddingTop: 0,
   },
   header: {
-    width: '100%',
-    height: 65,
     backgroundColor: '#C2A868',
     flexDirection: 'row',
     alignItems: 'center',
+    paddingTop: 50,
+    paddingBottom: 10,
     paddingHorizontal: 20,
-    paddingTop: 15,
-    zIndex: 0,
     // borderBottomLeftRadius: 25,
     // borderBottomRightRadius: 25,
   },
   backButton: {
-    padding: 8,
-    marginTop: -10,  
+    padding: 5,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#FFF',
     fontFamily: 'OpenSans',
     marginLeft: 10,
-    marginBottom:10
   },
   card: {
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#F4F4F4',
     padding: 25,
     paddingBottom: 30,
     borderRadius: 20,
@@ -360,7 +471,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     borderWidth: 1,
-    borderColor: '#4CAF50',
+    borderColor: '#E0E0E0',
     zIndex: 2,
     position: 'relative',
     bottom: 15
@@ -501,7 +612,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    borderColor:'#4CAF50'
   },
   modalContent: {
     backgroundColor: '#FFF',
@@ -516,7 +626,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 50,
     marginBottom: 20,
-    borderColor:'#4CAF50',
   },
   modalTitle: {
     fontSize: 24,
@@ -550,5 +659,144 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     marginTop: 0,
     zIndex: 2,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#FFF',
+    padding: 25,
+    borderRadius: 20,
+    alignItems: 'center',
+    width: '85%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  modalIconContainer: {
+    backgroundColor: '#F8F8F8',
+    padding: 20,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2E593F',
+    marginBottom: 10,
+    fontFamily: 'OpenSans',
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 25,
+    fontFamily: 'OpenSans',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 20,
+  },
+  modalButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginHorizontal: 5,
+    elevation: 3,
+  },
+  cancelButton: {
+    backgroundColor: '#E0E0E0',
+  },
+  deleteButton: {
+    backgroundColor: '#FF4444',
+  },
+  updateButton: {
+    backgroundColor: '#C2A868',
+  },
+  modalButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'OpenSans',
+  },
+  actionsButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  actionsModalContent: {
+    backgroundColor: '#FFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    paddingBottom: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  actionsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  actionsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#2E593F',
+    fontFamily: 'OpenSans',
+  },
+  closeButton: {
+    padding: 5,
+  },
+  actionsList: {
+    padding: 20,
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  actionIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  actionTextContainer: {
+    flex: 1,
+  },
+  actionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    fontFamily: 'OpenSans',
+  },
+  actionSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
+    fontFamily: 'OpenSans',
+  },
+  actionDivider: {
+    height: 1,
+    backgroundColor: '#F0F0F0',
+    marginVertical: 10,
   },
 });

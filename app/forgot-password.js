@@ -1,147 +1,256 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Alert,
-  ImageBackground 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useLanguage } from './context/LanguageContext';
-import { translations } from './translations/translations';
+import { Ionicons } from '@expo/vector-icons';
 
 const ForgotPassword = () => {
   const router = useRouter();
-  const { language, toggleLanguage } = useLanguage();
-  const t = translations[language];
   const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const [code, setCode] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSendCode = () => {
+    setErrorMessage('');
+    setSuccessMessage('');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    if (!email) {
-      Alert.alert('Error', t.fillAllFields);
+
+    if (!email || !emailRegex.test(email)) {
+      setErrorMessage('Please enter a valid email address');
       return;
     }
 
-    if (!emailRegex.test(email)) {
-      Alert.alert('Error', t.invalidEmail);
-      return;
-    }
+    // Mock: check if email exists (in real case, query your backend)
+    // if (email !== 'user@gmail.com') {
+    //   setErrorMessage('No account associated with this email');
+    //   return;
+    // }
 
     setIsCodeSent(true);
-    Alert.alert('Success', t.verificationCodeSent);
+    setSuccessMessage('Verification code has been sent to your email');
   };
 
   const handleVerifyCode = () => {
+    setErrorMessage('');
+    setSuccessMessage('');
+    
     if (!code) {
-      Alert.alert('Error', t.fillAllFields);
+      setErrorMessage('Please enter the verification code');
       return;
     }
-    
-    Alert.alert('Success', t.codeVerified);
+
+    // Optional: mock correct code check
+    if (code !== '123456') {
+      setErrorMessage('The code you entered is incorrect');
+      return;
+    }
+
+    setSuccessMessage('Code verified successfully');
     router.push('/reset-password');
   };
 
   return (
-    <ImageBackground source={require('../assets/bg.jpg')} style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Ionicons name="arrow-back" size={30} color="black" />
-      </TouchableOpacity>
-      
-      <Text style={styles.title}>{t.forgotPasswordTitle}</Text>
-      
-      {!isCodeSent ? (
-        <>
-          <Text style={styles.subtitle}>{t.enterEmail}</Text>
-          <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={24} color="gray" style={styles.icon} />
-            <TextInput 
-              placeholder={t.email} 
-              style={styles.input} 
-              keyboardType="email-address"
-              onChangeText={text => setEmail(text)}
-            />
+    <ImageBackground
+      source={require('../assets/bg.jpg')}
+      style={styles.container}
+      resizeMode="cover"
+    >
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={styles.innerContainer}>
+          {/* Logo */}
+          <View style={styles.logoContainer}>
+            <Image source={require('../assets/logo.png')} style={styles.logo} />
           </View>
-          <TouchableOpacity style={styles.button} onPress={handleSendCode}>
-            <Text style={styles.buttonText}>{t.sendCode}</Text>
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
-          <Text style={styles.subtitle}>{t.enterCode}</Text>
-          <View style={styles.inputContainer}>
-            <Ionicons name="key-outline" size={24} color="gray" style={styles.icon} />
-            <TextInput 
-              placeholder={t.enterCode} 
-              style={styles.input} 
-              keyboardType="numeric"
-              onChangeText={text => setCode(text)}
-            />
+
+          {/* Form Section */}
+          <View style={styles.formSection}>
+            {!isCodeSent ? (
+              <>
+                <Text style={styles.title}>Reset Password</Text>
+                <Text style={styles.subtitle}>
+                  Enter your email to receive a verification code
+                </Text>
+
+                {errorMessage ? (
+                  <View style={styles.alertContainer}>
+                    <Ionicons name="alert-circle" size={20} color="#fff" />
+                    <Text style={styles.errorText}>{errorMessage}</Text>
+                  </View>
+                ) : null}
+                {successMessage ? (
+                  <View style={[styles.alertContainer, styles.successContainer]}>
+                    <Ionicons name="checkmark-circle" size={20} color="#fff" />
+                    <Text style={styles.successText}>{successMessage}</Text>
+                  </View>
+                ) : null}
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email Address"
+                  placeholderTextColor="#888"
+                  keyboardType="email-address"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+
+                <TouchableOpacity style={styles.button} onPress={handleSendCode}>
+                  <Text style={styles.buttonText}>Send Verification Code</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <Text style={styles.title}>Enter Code</Text>
+                <Text style={styles.subtitle}>Check your email for the code</Text>
+
+                {errorMessage ? (
+                  <View style={styles.alertContainer}>
+                    <Ionicons name="alert-circle" size={20} color="#fff" />
+                    <Text style={styles.errorText}>{errorMessage}</Text>
+                  </View>
+                ) : null}
+                {successMessage ? (
+                  <View style={[styles.alertContainer, styles.successContainer]}>
+                    <Ionicons name="checkmark-circle" size={20} color="#fff" />
+                    <Text style={styles.successText}>{successMessage}</Text>
+                  </View>
+                ) : null}
+
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Code"
+                  placeholderTextColor="#888"
+                  keyboardType="numeric"
+                  value={code}
+                  onChangeText={setCode}
+                />
+
+                <TouchableOpacity style={styles.button} onPress={handleVerifyCode}>
+                  <Text style={styles.buttonText}>Verify Code</Text>
+                </TouchableOpacity>
+              </>
+            )}
+
+            <TouchableOpacity onPress={() => router.back()}>
+              <Text style={styles.backText}>← Back to Login</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.button} onPress={handleVerifyCode}>
-            <Text style={styles.buttonText}>{t.verifyCode}</Text>
-          </TouchableOpacity>
-        </>
-      )}
+        </View>
+      </KeyboardAvoidingView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20
+    flex: 1
   },
-  backButton: {
-    position: 'absolute',
-    top: 30,
-    left: 20,
-    zIndex: 1
+  innerContainer: {
+    flex: 1,
+    justifyContent: 'space-between'
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginTop: 150
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain'
+  },
+  formSection: {
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    paddingHorizontal: 30,
+    paddingVertical: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    alignItems: 'center'
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: 10,
+    color: '#000'
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#555',
+    textAlign: 'center',
     marginBottom: 20
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  input: {
     width: '100%',
     height: 50,
-    borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 10,
+    borderWidth: 1,
+    borderRadius: 12,
     paddingHorizontal: 15,
-    marginBottom: 20,
-    backgroundColor: '#fff'
-  },
-  input: {
-    flex: 1,
-    marginLeft: 10
+    backgroundColor: '#fff',
+    marginBottom: 20
   },
   button: {
-    backgroundColor: '#d4af37',
-    paddingVertical: 12,
-    paddingHorizontal: 30,
-    borderRadius: 10
+    backgroundColor: '#c4a23f',
+    paddingVertical: 14,
+    borderRadius: 12,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 15
   },
   buttonText: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: 'bold'
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  backText: {
+    color: '#b88a00',
+    fontSize: 14
+  },
+  alertContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ff3333',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  successContainer: {
+    backgroundColor: '#4CAF50',
+  },
+  errorText: {
+    color: '#fff',
+    marginLeft: 8,
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  successText: {
+    color: '#fff',
+    marginLeft: 8,
+    flex: 1,
+    fontSize: 14,
+    fontWeight: '500',
   }
 });
 
